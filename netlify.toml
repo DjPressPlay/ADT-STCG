@@ -19,7 +19,7 @@
 # ---------- SPA fallback (static files take precedence) ----------
 [[redirects]]
   from = "/*"
-  to   = "/index.html"
+  to   = "/pages/index.html"
   status = 200
 
 # ---------- Scheduled functions ----------
