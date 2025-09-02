@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Zetsu Card — Summon</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark">
+<style>
+  :root{
+    --frame-color:#e63946; /* fallback red */
+    --frame-outer:#000;
+    --text:#fff;
+  }
+
+  /* =========================
+   FrameType → Color Mapping
+   ========================= */
+  [data-frame="breaking_news"]     { --frame-color: #ff2b2b; } /* bright-red */
+  [data-frame="politics"]          { --frame-color: #800000; } /* maroon */
+  [data-frame="national_news"]     { --frame-color: #001f5c; } /* dark-blue */
+  [data-frame="international_news"]{ --frame-color: #0057e7; } /* blue */
+  [data-frame="local_news"]        { --frame-color: #66ccff; } /* sky-blue */
+  [data-frame="economy"]           { --frame-color: #008080; } /* teal */
+  [data-frame="business"]          { --frame-color: #ffd700; } /* gold */
+  [data-frame="sales"]             { --frame-color: #00ffff; } /* cyan */
+  [data-frame="merch"]             { --frame-color: #ff00ff; } /* magenta */
+  [data-frame="technology"]        { --frame-color: #c0c0c0; } /* silver */
+  [data-frame="science"]           { --frame-color: #0074d9; } /* science-blue */
+  [data-frame="health"]            { --frame-color: #ff4500; } /* red-orange */
+  [data-frame="education"]         { --frame-color: #87cefa; } /* sky-blue-light */
+  [data-frame="environment"]       { --frame-color: #228b22; } /* forest-green */
+  [data-frame="sports"]            { --frame-color: #008000; } /* green */
+  [data-frame="entertainment"]     { --frame-color: #ffa500; } /* orange */
+  [data-frame="lifestyle"]         { --frame-color: #90ee90; } /* light-green */
+  [data-frame="travel"]            { --frame-color: #008080; } /* teal */
+  [data-frame="opinion"]           { --frame-color: #8a2be2; } /* violet */
+  [data-frame="editorial"]         { --frame-color: #4b0082; } /* dark-violet */
+  [data-frame="feature_story"]     { --frame-color: #ffdab9; } /* peach */
+  [data-frame="photojournalism"]   { --frame-color: #808080; } /* gray */
+  [data-frame="classifieds"]       { --frame-color: #f5f5dc; } /* beige */
+  [data-frame="comics_puzzles"]    { --frame-color: #9acd32; } /* yellow-green */
+  [data-frame="obituaries"]        { --frame-color: #000000; } /* black */
+  [data-frame="weather"]           { --frame-color: #d3d3d3; } /* light-gray */
+  [data-frame="society"]           { --frame-color: #e32636; } /* rose */
+  [data-frame="infotainment"]      { --frame-color: #ffff33; } /* neon-yellow */
+  [data-frame="soft_news"]         { --frame-color: #ffefd5; } /* peach-light */
+  [data-frame="hard_news"]         { --frame-color: #8b0000; } /* dark-red */
+  [data-frame="investigative"]     { --frame-color: #00008b; } /* deep dark-blue */
+  [data-frame="government"]        { --frame-color: linear-gradient(90deg,#dcdcdc 0%,#a9a9a9 25%,#808080 50%,#a9a9a9 75%,#dcdcdc 100%); } /* metallic */
+  [data-frame="zetsu"] .frameType-inner {
+  border: 6px solid transparent;
+  border-image: linear-gradient(135deg,#e63946,#6f42c1,#00e6e6) 1;
+}
+[data-frame="zetsu"] .card-header,
+[data-frame="zetsu"] .type-banner,
+[data-frame="zetsu"] .effect-box,
+[data-frame="zetsu"] .meta-block,
+[data-frame="zetsu"] .meta-bottom {
+  border-color: transparent; /* fallback */
+  border-image: linear-gradient(135deg,#e63946,#6f42c1,#00e6e6) 1;
+}
+
+  [data-frame="social"]            { --frame-color: #e32636; } /* rose */
+  [data-frame="crypto"]            { --frame-color: #800080; } /* purple */
+  [data-frame="meme"]              { --frame-color: linear-gradient(90deg,#ff00ff,#ffff00,#00ffff); } /* neon-multicolor */
+  [data-frame="people"]            { --frame-color: #d3d3d3; } /* light-gray */
+
+  body{
+    margin:0; background:#111; color:var(--text);
+    font-family:"Orbitron",system-ui,Segoe UI,Arial,Helvetica,sans-serif;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px;
+  }
+
+  .summon-container {
+    display:flex; align-items:center; justify-content:center;
+    padding:20px; background:#000;
+    border-radius:16px; box-shadow:0 0 20px rgba(0,0,0,0.7);
+    perspective: 1200px;
+  }
+
+  .frameType {
+    position:relative; overflow:hidden;
+    border:12px solid var(--frame-outer); border-radius:14px;
+    width:clamp(360px, 92vw, 460px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transform-style: preserve-3d;
+  }
+
+  .frameType-inner{ position:relative; overflow:hidden;
+    border:6px solid var(--frame-color); border-radius:10px;
+    background:#1a1a1a;
+  }
+
+  .card-header, .card-art, .type-banner, .effect-box, .meta-block, .meta-bottom { position:relative; z-index:1; }
+  .card-header{
+    display:flex; justify-content:space-between; align-items:center;
+    background:#000; padding:6px 10px; font-size:.9rem; font-weight:800;
+    border-bottom:2px solid var(--frame-color); border-top-left-radius:8px; border-top-right-radius:8px;
+    overflow:hidden;
+  }
+  .card-id{ background:#fff; color:#000; padding:2px 6px; border-radius:4px; font-size:.75rem; white-space:nowrap; }
+
+  .card-name { flex:1; min-width:0; text-align:center; overflow:hidden; position:relative; height:1.5em; }
+  .card-name span { display:block; white-space:normal; line-height:1.5em; }
+  .card-name span.scroll-vertical { animation: scrollLines 11s linear infinite; }
+  @keyframes scrollLines {
+    0%, 10%   { transform: translateY(0%); }
+    90%       { transform: translateY(-100%); }
+    100%      { transform: translateY(0%); }
+  }
+
+  .card-icon{ font-size:1.1rem; }
+  .card-art{ margin:10px; background:#222; aspect-ratio:4/3;
+    border:3px solid var(--frame-color); border-radius:8px; overflow:hidden; position:relative;
+  }
+  .card-art img{ width:100%; height:100%; object-fit:cover; }
+  .stat-orb{ position:absolute; width:54px; height:54px; border-radius:50%;
+    font-weight:800; font-size:1rem; display:flex; align-items:center; justify-content:center;
+    border:3px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.4);
+  }
+  .stat-blue{ top:6px; left:6px; background:#3498db; }
+  .stat-red{ bottom:6px; left:6px; background:#e63946; }
+  .stat-green{ bottom:6px; right:6px; background:#2ecc71; }
+  .type-banner{ background:#000; color:#fff; padding:6px 10px; font-weight:800;
+    border-top:2px solid var(--frame-color); border-bottom:2px solid var(--frame-color);
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px;
+  }
+  .effect-box { background:#000; border-top:2px solid var(--frame-color); border-bottom:2px solid var(--frame-color);
+    padding:10px; display:flex; flex-direction:column; gap:8px; }
+  .effect-entry { border:1px solid #2a2a2a; background:#0f0f0f; border-radius:8px; padding:8px 10px;
+    max-height: 100px; overflow-y: auto; }
+  .effect-bar{ display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:4px; }
+  .meta-block{ border-top:2px solid var(--frame-color); border-bottom:2px solid var(--frame-color);
+    background:#000; padding:8px 10px; display:flex; flex-direction:column; gap:6px; }
+  .meta-line{ display:flex; gap:8px; align-items:center; font-size:.78rem; color:#ccc; }
+  .meta-label{ font-weight:800; text-transform:uppercase; }
+  .meta-bottom{ border-top:2px solid var(--frame-color); background:#111;
+    padding:10px 12px 32px; text-align:center; color:#ccc; }
+  .meta-footer-text{ font-size:.72rem; }
+  .rarity{ position:absolute; right:10px; bottom:6px; font-weight:800;
+    padding:2px 8px; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<div class="summon-container">
+  <div class="frameType" id="summon-card">
+    <div id="inner" class="frameType-inner">
+      <div class="card-header">
+        <div class="card-id" id="card-id"></div>
+        <div class="card-name"><span id="card-name"></span></div>
+        <div class="card-icon" id="card-icon"></div>
+      </div>
+      <div class="card-art">
+        <img id="card-image" alt="">
+        <div class="stat-orb stat-blue"  id="level"></div>
+        <div class="stat-orb stat-red"   id="atk"></div>
+        <div class="stat-orb stat-green" id="def"></div>
+      </div>
+      <div class="type-banner">
+        <div><span id="tribute"></span></div>
+        <div><span id="about"></span></div>
+        <div><span id="type-emoji"></span></div>
+      </div>
+      <div class="effect-box" id="effect-box"></div>
+      <div class="meta-block">
+        <div class="meta-line"><div class="meta-label">Sets -</div><div id="sets-line"></div></div>
+        <div class="meta-line"><div class="meta-label">Tags -</div><div id="tags-line"></div></div>
+      </div>
+      <div class="meta-bottom">
+        <div class="meta-footer-text" id="footer"></div>
+        <div class="rarity" id="rarity"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function safeParse(s){ try{ return JSON.parse(s) } catch { return null } }
+function getCardFromLink(){
+  const p = new URLSearchParams(location.search);
+  if (!p.has("card")) return null;
+  return safeParse(decodeURIComponent(p.get("card")));
+}
+const card = getCardFromLink() || {};
+
+const $ = id => document.getElementById(id);
+$("card-id").textContent   = card.id || "";
+$("card-name").textContent = card.name || "";
+$("card-icon").textContent = card.icon || "";
+
+$("card-image").src = card.card_images?.[0]?.image_url || "";
+$("card-image").alt = card.name || "";
+
+$("level").textContent = card.level || "";
+$("atk").textContent   = card.atk   || "";
+$("def").textContent   = card.def   || "";
+
+$("tribute").textContent   = card.tribute || "";
+$("about").textContent     = card.about   || "";
+$("type-emoji").textContent= card.icon    || "";
+
+const effBox = $("effect-box");
+(card.effects||[]).forEach(e=>{
+  const entry = document.createElement("div"); entry.className="effect-entry";
+  entry.innerHTML = `<div class="effect-bar"><div>${e.icons||""}</div><div>${e.emoji||""}</div></div>
+                     <div class="effect-text">${e.text||""}</div>`;
+  effBox.append(entry);
+});
+
+$("sets-line").textContent = (card.card_sets||[]).join(" ");
+$("tags-line").textContent = (card.tags||[]).join(" ");
+$("footer").textContent    = card.footer || "";
+$("rarity").textContent    = card.rarity || "";
+
+/* 🔥 Apply frame type */
+const summonCard = document.getElementById("summon-card");
+if (card.frameType) {
+  summonCard.setAttribute("data-frame", card.frameType);
+}
+
+/* Tilt effect */
+summonCard.addEventListener("mousemove", (e) => {
+  const rect = summonCard.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const rotateY = ((x / rect.width) - 0.5) * 20;
+  const rotateX = ((y / rect.height) - 0.5) * -20;
+  summonCard.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+  summonCard.style.boxShadow = "0 20px 40px rgba(230,57,70,.6)";
+});
+summonCard.addEventListener("mouseleave", () => {
+  summonCard.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
+  summonCard.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
+});
+
+/* Vertical scroll if needed */
+const nameSpan = document.getElementById("card-name");
+if (nameSpan.scrollHeight > nameSpan.parentElement.clientHeight) {
+  nameSpan.classList.add("scroll-vertical");
+}
+</script>
+</body>
+</html>
