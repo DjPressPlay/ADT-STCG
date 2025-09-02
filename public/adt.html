@@ -1,0 +1,153 @@
+<!-- public/adt.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Battle Board</title>
+
+  <!-- scripts -->
+  <script src="adt.js"></script>
+  <script type="module" src="./card_library.js"></script>
+  <script type="module" src="./dealer.js"></script>
+
+  <!-- styles -->
+  <link rel="stylesheet" href="adt.css" />
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      if (typeof initCardInfoHover === "function") {
+        initCardInfoHover();
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- BOARD WRAPPER -->
+  <div class="board-container">
+
+    <!-- CPU MAT -->
+    <div class="map-section cpu-section">
+      <!-- Floating -->
+      <div id="cpu-deck" class="deck cpu-deck"></div>
+      <div id="cpu-grave" class="grave grave-cpu"></div>
+      <div id="cpu-burn" class="burn burn-cpu"></div>
+
+      <!-- HAND -->
+      <div class="zone cpu-hand">
+        <div class="slot" id="cpu-hand-1"></div>
+        <div class="slot" id="cpu-hand-2"></div>
+        <div class="slot" id="cpu-hand-3"></div>
+        <div class="slot" id="cpu-hand-4"></div>
+        <div class="slot" id="cpu-hand-5"></div>
+        <div class="slot" id="cpu-hand-6" style="display:none;"></div>
+        <div class="slot" id="cpu-hand-7" style="display:none;"></div>
+      </div>
+
+      <!-- TRAPS -->
+      <div class="zone cpu-traps">
+        <div class="slot" id="cpu-trap-1"></div>
+        <div class="slot" id="cpu-trap-2"></div>
+        <div class="slot" id="cpu-trap-3"></div>
+      </div>
+    </div>
+
+    <!-- CPU HUD -->
+    <div class="hud cpu-hud">
+      <div id="cpu-card-info" class="card-info info-left">Card Info...</div>
+      <div class="hud-pic">
+        <img src="https://miro.medium.com/v2/resize:fit:786/format:webp/1*rYMkBL3JcdN_oYqWG4opHw.png" alt="CPU Avatar">
+      </div>
+      <div class="hud-name">CPU</div>
+      <div class="hud-health"><div class="hud-health-fill" style="width:100%;"></div></div>
+    </div>
+
+    <!-- SHARED BATTLE ZONE -->
+    <div class="map-section shared-section">
+      <div class="zone cpu-battle">
+        <div class="slot" id="cpu-battle-1"></div>
+      </div>
+      <div class="battle-counter" id="battle-counter">3</div>
+      <div class="zone player-battle">
+        <div class="slot" id="player-battle-1"></div>
+      </div>
+      <div id="game-message" class="message-box">Waiting...</div>
+    </div>
+
+    <!-- PLAYER HUD -->
+    <div class="hud player-hud">
+      <div class="hud-pic">
+        <img src="https://miro.medium.com/v2/resize:fit:786/format:webp/1*rYMkBL3JcdN_oYqWG4opHw.png" alt="Player Avatar">
+      </div>
+      <div class="hud-name">PLAYER</div>
+      <div class="hud-health"><div class="hud-health-fill" style="width:100%;"></div></div>
+      <div id="player-card-info" class="card-info info-right">Card Info...</div>
+    </div>
+
+    <!-- PLAYER MAT -->
+    <div class="map-section player-section">
+
+      <!-- Floating -->
+      <div id="player-deck" class="deck player-deck"></div>
+      <div id="player-grave" class="grave grave-player"></div>
+      <div id="player-burn" class="burn burn-player"></div>
+
+      <!-- TRAPS -->
+      <div class="zone player-traps">
+        <div class="slot" id="player-trap-1"></div>
+        <div class="slot" id="player-trap-2"></div>
+        <div class="slot" id="player-trap-3"></div>
+      </div>
+
+      <!-- HAND -->
+      <div class="zone player-hand">
+        <!-- Example hardcoded card -->
+        <div class="slot" id="player-hand-1">
+          <div class="mini-card frameType" data-frame="technology">
+            <div class="frameType-inner">
+              <div class="card-header">
+                <div class="card-id">#001</div>
+                <div class="card-name"><span>Falcon 9</span></div>
+                <div class="card-icon">🚀</div>
+              </div>
+              <div class="card-art">
+                <img src="https://link.to/image.jpg" alt="card art">
+                <div class="stat-orb stat-blue">4</div>
+                <div class="stat-orb stat-red">3000</div>
+                <div class="stat-orb stat-green">2200</div>
+              </div>
+              <div class="type-banner">
+                <div><span>🙇‍♂️🙇‍♂️</span></div>
+                <div><span>Technology</span></div>
+                <div><span>🚀</span></div>
+              </div>
+              <div class="effect-box">
+                <div class="effect-entry">
+                  <div class="effect-bar"><div>⭐</div><div>🛰️</div></div>
+                  <div class="effect-text">Falcon 9 lifts payload to orbit.</div>
+                </div>
+              </div>
+              <div class="meta-block">
+                <div class="meta-line"><div class="meta-label">Sets -</div><div>Orbital Ops</div></div>
+                <div class="meta-line"><div class="meta-label">Tags -</div><div>SpaceX Rocketry</div></div>
+              </div>
+              <div class="meta-bottom">
+                <div class="meta-footer-text">Jessica AI | Zetsu Corp</div>
+                <div class="rarity">SR</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining slots -->
+        <div class="slot" id="player-hand-2"></div>
+        <div class="slot" id="player-hand-3"></div>
+        <div class="slot" id="player-hand-4"></div>
+        <div class="slot" id="player-hand-5"></div>
+        <div class="slot" id="player-hand-6" style="display:none;"></div>
+        <div class="slot" id="player-hand-7" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
