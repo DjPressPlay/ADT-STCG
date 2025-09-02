@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SporeZ — Card Deck</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+    :root {
+      --cy: #00ffff;
+      --mg: #ff00ff;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
@@ -18,250 +27,266 @@
       overflow-x: hidden;
       position: relative;
     }
+
+    /* Grid background */
     body::before {
       content: "";
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; inset: 0;
       background-image:
         linear-gradient(transparent 95%, rgba(0,255,255,0.08) 95%),
         linear-gradient(90deg, transparent 95%, rgba(255,0,255,0.08) 95%);
       background-size: 40px 40px;
       z-index: -3; pointer-events: none;
     }
+
+    /* Glow orbs */
     .glow-orb {
       position: fixed; border-radius: 50%; filter: blur(120px);
       opacity: 0.4; z-index: -2; transition: transform 0.1s linear;
       will-change: transform;
     }
-    .orb1 { width: 450px; height: 450px; background: #00ffff; top: -15%; left: -10%; }
-    .orb2 { width: 350px; height: 350px; background: #ff00ff; bottom: -20%; right: -10%; }
+    .orb1 { width: 450px; height: 450px; background: var(--cy); top: -15%; left: -10%; }
+    .orb2 { width: 350px; height: 350px; background: var(--mg); bottom: -20%; right: -10%; }
 
-    .deck { display: flex; justify-content: center; align-items: flex-start;
-      perspective: 1200px; margin-bottom: 3rem; position: relative; height: 420px; }
+    /* Deck preview */
+    .deck {
+      display: flex; justify-content: center; align-items: flex-start;
+      perspective: 1200px; margin-bottom: 3rem; position: relative; height: 420px;
+      width: 100%;
+    }
     .card {
       width: 380px; height: 460px; border-radius: 16px;
       background: linear-gradient(135deg, #111, #222);
-      box-shadow: 0 0 25px rgba(0,255,255,0.4), 0 0 40px rgba(255,0,255,0.3);
       border: 3px solid transparent; background-clip: padding-box;
+      box-shadow: 0 0 25px rgba(0,255,255,0.4), 0 0 40px rgba(255,0,255,0.3);
       position: relative; transform-style: preserve-3d;
-      transition: transform 0.4s ease, box-shadow 0.3s ease;
+      transition: transform 0.35s ease, box-shadow 0.3s ease;
       margin: 0 -80px; overflow: hidden; display: flex; flex-direction: column;
     }
     .card:nth-child(1){ transform: rotate(-8deg); z-index: 1; }
     .card:nth-child(2){ transform: rotate(-4deg); z-index: 2; }
-    .card:nth-child(3){ transform: rotate(0deg); z-index: 3; }
-    .card:nth-child(4){ transform: rotate(4deg); z-index: 2; }
-    .card:nth-child(5){ transform: rotate(8deg); z-index: 1; }
-    .card:hover { transform: scale(1.05) rotate(0deg)!important;
-      box-shadow: 0 0 40px rgba(0,255,255,0.7), 0 0 60px rgba(255,0,255,0.6); z-index: 10; }
+    .card:nth-child(3){ transform: rotate(0deg);  z-index: 3; }
+    .card:nth-child(4){ transform: rotate(4deg);  z-index: 2; }
+    .card:nth-child(5){ transform: rotate(8deg);  z-index: 1; }
+    .card:hover {
+      transform: scale(1.05) rotate(0deg)!important;
+      box-shadow: 0 0 40px rgba(0,255,255,0.7), 0 0 60px rgba(255,0,255,0.6);
+      z-index: 10;
+    }
     .card-header {
-      background: linear-gradient(90deg, #0ff, #f0f);
+      background: linear-gradient(90deg, var(--cy), var(--mg));
       border-radius: 14px 14px 0 0; padding: 0.5rem;
-      font-weight: bold; text-align: center; color: #000; font-size: 0.9rem;
+      font-weight: 700; text-align: center; color: #000; font-size: 0.9rem;
       position: relative; z-index: 2;
     }
     .card-image {
-      flex: 1; background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/1*8Jf-7lPV8m1S8Aht4ipr4w.png") center/cover no-repeat;
-      filter: brightness(0.85); position: relative; z-index: 1;
+      flex: 1;
+      background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/1*8Jf-7lPV8m1S8Aht4ipr4w.png") center/cover no-repeat;
+      filter: brightness(0.85);
+      position: relative; z-index: 1;
     }
     .footer {
       font-size: 0.65rem; text-align: center; padding: 0.4rem;
-      background: rgba(0,0,0,0.6); color: #0ff;
+      background: rgba(0,0,0,0.6); color: var(--cy);
       border-top: 1px solid rgba(255,255,255,0.2); z-index: 2;
     }
 
+    /* Search / ritual */
     .search-bar {
-      width: 90%; max-width: 500px; display: flex; margin-bottom: 2rem; z-index: 5;
+      width: 90%; max-width: 560px; display: flex; margin-bottom: 1.25rem; z-index: 5;
     }
     .search-bar input {
       flex: 1; padding: 0.9rem; border-radius: 10px 0 0 10px;
       border: none; outline: none; font-size: 1rem;
-      background: #111; color: #0ff; box-shadow: inset 0 0 12px rgba(0,255,255,0.4);
+      background: #111; color: var(--cy);
+      box-shadow: inset 0 0 12px rgba(0,255,255,0.4);
     }
     .search-bar button {
       padding: 0.9rem 1.2rem; border-radius: 0 10px 10px 0; border: none;
-      background: linear-gradient(90deg,#00f0ff,#ff00ff); color: #fff;
-      font-weight: bold; cursor: pointer;
-      box-shadow: 0 0 12px rgba(255,0,255,0.6); transition: transform 0.2s ease;
+      background: linear-gradient(90deg, #00f0ff, #ff00ff); color: #fff;
+      font-weight: 700; cursor: pointer;
+      box-shadow: 0 0 12px rgba(255,0,255,0.6);
+      transition: transform 0.2s ease, opacity .2s ease;
     }
     .search-bar button:hover { transform: scale(1.05); }
+    .search-bar button:disabled { opacity: .6; cursor: default; }
 
+    /* Output */
     .output {
       width: 90%; max-width: 700px; background: #050505;
       border-radius: 12px; padding: 1rem; font-size: 0.85rem;
-      max-height: 240px; overflow-y: auto;
+      max-height: 260px; overflow-y: auto;
       box-shadow: inset 0 0 12px rgba(0,255,200,0.2);
-      color: #0ff; white-space: pre-wrap;
+      color: var(--cy); white-space: pre-wrap;
     }
 
-    .action-buttons {
-      margin-top: 1rem; text-align:center;
-    }
+    /* Actions */
+    .action-buttons { margin-top: 1rem; text-align:center; }
     .action-buttons button {
-      margin: 0 0.5rem;
-      padding: 0.7rem 1.2rem;
-      font-size: 1rem;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(90deg,#00f0ff,#ff00ff);
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 12px rgba(255,0,255,0.6);
+      margin: 0 .5rem; padding: .7rem 1.2rem; font-size: 1rem; border-radius: 10px; border: none;
+      background: linear-gradient(90deg,#00f0ff,#ff00ff); color: #fff; font-weight: 700;
+      cursor: pointer; box-shadow: 0 0 12px rgba(255,0,255,0.6);
       transition: transform 0.2s ease;
     }
     .action-buttons button:hover { transform: scale(1.05); }
   </style>
 </head>
 <body>
-
+  <!-- FX -->
   <div class="glow-orb orb1" id="orb1"></div>
   <div class="glow-orb orb2" id="orb2"></div>
 
+  <!-- Deck preview -->
   <div class="deck" id="deck"></div>
 
+  <!-- Ritual -->
   <div class="search-bar">
-    <input type="text" placeholder="Create a ZTCG Card from any data link...">
-    <button>Creation Ritual</button>
+    <input id="urlInput" type="text" placeholder="Create a ZTCG Card from any data link..." />
+    <button id="createBtn">Creation Ritual</button>
   </div>
 
+  <!-- Actions -->
   <div class="action-buttons">
     <button id="summon-btn">🔮 Summon Card</button>
     <button id="battle-btn">⚔️ Battle Mode</button>
   </div>
 
+  <!-- Output -->
   <div class="output" id="output">⚡ Card data stream will appear here...</div>
 
-<script>
-  /* ===== Deck build (visual only) ===== */
-  const cardsData = [
-    { title: "⚡ Zetsu Blade" },
-    { title: "🌌 Orbital Echo" },
-    { title: "🕷️ Spore Crawler" },
-    { title: "💎 Quantum Shard" },
-    { title: "🔥 Infernal Pulse" }
-  ];
-  const deck = document.getElementById("deck");
-  cardsData.forEach(c => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="card-header">${c.title}</div>
-      <div class="card-image"></div>
-      <div class="footer">Zetsumetsu Eoe™ | ZETSUMETSU CORPORATION | Artworqq Kevin Suber</div>
-    `;
-    deck.appendChild(card);
-  });
-
-  /* ===== Parallax orbs ===== */
-  const orb1 = document.getElementById("orb1");
-  const orb2 = document.getElementById("orb2");
-  document.addEventListener("mousemove", e => {
-    const { innerWidth, innerHeight } = window;
-    const x = (e.clientX / innerWidth - 0.5) * 100;
-    const y = (e.clientY / innerHeight - 0.5) * 100;
-    orb1.style.transform = `translate(${x}px, ${y}px) scale(1.1)`;
-    orb2.style.transform = `translate(${-x}px, ${-y}px) scale(1.1)`;
-  });
-
-  /* ===== Ritual GIF ===== */
-  const GIF_SRC = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmEzdjIzNmdvbDNnMm1obXA3MmQwcXAxN2dkeHV4dnRvcjI0dmZtNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rTzAcZats1TRlAxI7H/giphy.gif";
-  function showRitual() {
-    const old = document.getElementById("ritualFloat");
-    if (old) old.remove();
-    const wrap = document.createElement("div");
-    wrap.id = "ritualFloat";
-    wrap.style.cssText = `position: fixed; left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 999; opacity: 0;
-      transition: opacity .2s ease; pointer-events: none;`;
-    const img = document.createElement("img");
-    img.alt = "Ritual Animation";
-    img.src = GIF_SRC + "?t=" + Date.now();
-    img.style.cssText = `width: min(78vmin, 420px); height: auto;
-      border-radius: 12px; display: block; opacity: 0.65; cursor: pointer;`;
-    wrap.appendChild(img);
-    document.body.appendChild(wrap);
-    requestAnimationFrame(() => { wrap.style.opacity = "1"; });
-    setTimeout(() => wrap.remove(), 4500);
-  }
-
-  /* ===== APIs ===== */
-  const CRAWL_API  = "/api/crawl";
-  const ENRICH_API = "/api/enrich";
-
-  const input  = document.querySelector(".search-bar input");
-  const button = document.querySelector(".search-bar button");
-  const output = document.getElementById("output");
-
-  function isLikelyUrl(s) { return /^https?:\/\//i.test(s); }
-  async function postJSON(endpoint, payload) {
-    const res = await fetch(endpoint, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload || {})
-    });
-    const text = await res.text();
-    if (!res.ok) throw new Error(`POST ${endpoint} → ${res.status}: ${text}`);
-    try { return JSON.parse(text); } catch { return text; }
-  }
-
-  function hostOf(u){ try{ return new URL(u).hostname.replace(/^www\./i,''); }catch{ return ''; } }
-
-  async function makeCardFromUrl(url) {
-    const crawled = await postJSON(CRAWL_API, { links: [url], session: "web" });
-    const items = (crawled.results || []).map(r => {
-      const site = r.siteName || hostOf(r.url);
-      const d1 = (r.description || "").trim();
-      const d2raw = (r.title || "").trim();
-      const d2 = (d2raw && d2raw !== d1) ? d2raw : "";
-      return {
-        url: r.url,
-        title: r.title || site || r.url,
-        desc1: d1,
-        desc2: d2,
-        image: r.image || "",
-        brand: site,
-        siteName: site,
-        keywords: Array.isArray(r.keywords) ? r.keywords : []
-      };
-    });
-
-    const enriched = await postJSON(ENRICH_API, { items, session: crawled.session });
-    return (enriched.cards && enriched.cards[0]) || null;
-  }
-
-  /* ===== Ritual → scrape → enrich → show ===== */
-  button?.addEventListener("click", async () => {
-    const url = (input?.value || "").trim();
-    if (!url) { output.textContent = "Enter a URL."; return; }
-    if (!isLikelyUrl(url)) { output.textContent = "Enter a full http(s):// link"; return; }
-
-    showRitual(); button.disabled = true; output.textContent = "Scraping…";
-    try {
-      let card = await makeCardFromUrl(url);
-      if (!card) throw new Error("No card returned.");
-      output.textContent = JSON.stringify(card, null, 2);
-      localStorage.setItem("jessica_card", JSON.stringify(card));
-    } catch (e) {
-      output.textContent = (e && e.message) ? e.message : "Failed.";
-    } finally { button.disabled = false; }
-  });
-
-  /* ===== Summon button → always use freshest card ===== */
-  document.getElementById("summon-btn").addEventListener("click", () => {
-    let raw = output.textContent.trim();
-    try {
-      JSON.parse(raw);
-    } catch {
-      raw = localStorage.getItem("jessica_card") || "{}";
+  <script>
+    /* ===== Deck build (visual only) ===== */
+    const cardsData = [
+      { title: "⚡ Zetsu Blade" },
+      { title: "🌌 Orbital Echo" },
+      { title: "🕷️ Spore Crawler" },
+      { title: "💎 Quantum Shard" },
+      { title: "🔥 Infernal Pulse" }
+    ];
+    const deckEl = document.getElementById("deck");
+    for (const c of cardsData) {
+      const el = document.createElement("div");
+      el.className = "card";
+      el.innerHTML = `
+        <div class="card-header">${c.title}</div>
+        <div class="card-image"></div>
+        <div class="footer">Zetsumetsu Eoe™ | ZETSUMETSU CORPORATION | Artworqq Kevin Suber</div>
+      `;
+      deckEl.appendChild(el);
     }
-    const url = "summon_btn.html?card=" + encodeURIComponent(raw);
-    window.open(url, "SummonCard", "width=520,height=820");
-  });
 
-  /* ===== Battle button → open ADT game in popup ===== */
-  document.getElementById("battle-btn").addEventListener("click", () => {
-    window.open("adt.html", "BattleMode", "width=1024,height=768");
-  });
-</script>
+    /* ===== Parallax orbs ===== */
+    const orb1 = document.getElementById("orb1");
+    const orb2 = document.getElementById("orb2");
+    document.addEventListener("mousemove", e => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 100;
+      const y = (e.clientY / innerHeight - 0.5) * 100;
+      orb1.style.transform = `translate(${x}px, ${y}px) scale(1.1)`;
+      orb2.style.transform = `translate(${-x}px, ${-y}px) scale(1.1)`;
+    });
+
+    /* ===== Ritual float ===== */
+    const GIF_SRC = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmEzdjIzNmdvbDNnMm1obXA3MmQwcXAxN2dkeHV4dnRvcjI0dmZtNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rTzAcZats1TRlAxI7H/giphy.gif";
+    function showRitual() {
+      const old = document.getElementById("ritualFloat");
+      if (old) old.remove();
+      const wrap = document.createElement("div");
+      wrap.id = "ritualFloat";
+      wrap.style.cssText = "position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:999;opacity:0;transition:opacity .2s ease;pointer-events:none;";
+      const img = document.createElement("img");
+      img.alt = "Ritual Animation";
+      img.src = GIF_SRC + "?t=" + Date.now();
+      img.style.cssText = "width:min(78vmin,420px);height:auto;border-radius:12px;display:block;opacity:.65;";
+      wrap.appendChild(img);
+      document.body.appendChild(wrap);
+      requestAnimationFrame(() => { wrap.style.opacity = "1"; });
+      setTimeout(() => wrap.remove(), 4500);
+    }
+
+    /* ===== APIs ===== */
+    const CRAWL_API  = "/api/crawl";
+    const ENRICH_API = "/api/enrich";
+
+    const input  = document.getElementById("urlInput");
+    const createBtn = document.getElementById("createBtn");
+    const output = document.getElementById("output");
+
+    function isHttpUrl(s) { return /^https?:\/\//i.test(s); }
+    async function postJSON(endpoint, payload) {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload || {})
+      });
+      const txt = await res.text();
+      if (!res.ok) throw new Error(`POST ${endpoint} → ${res.status}: ${txt}`);
+      try { return JSON.parse(txt); } catch { return txt; }
+    }
+    function hostOf(u){ try{ return new URL(u).hostname.replace(/^www\./i,''); }catch{ return ''; } }
+
+    async function makeCardFromUrl(url) {
+      const crawled = await postJSON(CRAWL_API, { links: [url], session: "web" });
+      const items = (crawled.results || []).map(r => {
+        const site = r.siteName || hostOf(r.url);
+        const d1 = (r.description || "").trim();
+        const d2raw = (r.title || "").trim();
+        const d2 = (d2raw && d2raw !== d1) ? d2raw : "";
+        return {
+          url: r.url,
+          title: r.title || site || r.url,
+          desc1: d1,
+          desc2: d2,
+          image: r.image || "",
+          brand: site,
+          siteName: site,
+          keywords: Array.isArray(r.keywords) ? r.keywords : []
+        };
+      });
+      const enriched = await postJSON(ENRICH_API, { items, session: crawled.session });
+      return (enriched.cards && enriched.cards[0]) || null;
+    }
+
+    /* ===== Ritual → scrape → enrich → show ===== */
+    createBtn.addEventListener("click", async () => {
+      const url = (input.value || "").trim();
+      if (!url) { output.textContent = "Enter a URL."; return; }
+      if (!isHttpUrl(url)) { output.textContent = "Enter a full http(s):// link"; return; }
+
+      showRitual();
+      createBtn.disabled = true;
+      output.textContent = "Scraping…";
+      try {
+        const card = await makeCardFromUrl(url);
+        if (!card) throw new Error("No card returned.");
+        output.textContent = JSON.stringify(card, null, 2);
+        localStorage.setItem("jessica_card", JSON.stringify(card));
+      } catch (e) {
+        output.textContent = (e && e.message) ? e.message : "Failed.";
+      } finally {
+        createBtn.disabled = false;
+      }
+    });
+
+    /* ===== Summon (absolute path to avoid SPA rewrite issues) ===== */
+    document.getElementById("summon-btn").addEventListener("click", () => {
+      let raw = output.textContent.trim();
+      try { JSON.parse(raw); } catch { raw = localStorage.getItem("jessica_card") || "{}"; }
+      window.open(
+        "/pages/summon_btn.html?card=" + encodeURIComponent(raw),
+        "SummonCard",
+        "width=520,height=820"
+      );
+    });
+
+    /* ===== Battle (absolute path) ===== */
+    document.getElementById("battle-btn").addEventListener("click", () => {
+      window.open(
+        "/pages/adt.html",
+        "BattleMode",
+        "width=1024,height=768"
+      );
+    });
+  </script>
 </body>
 </html>
