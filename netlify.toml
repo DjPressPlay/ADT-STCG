@@ -4,8 +4,7 @@
 
 [functions]
   directory = "netlify/functions"
-  node_bundler = "esbuild" # default on Netlify; fine even with no deps
-
+  node_bundler = "esbuild"
 
 # ---------- API headers (no cache + CORS) ----------
 [[headers]]
@@ -17,6 +16,12 @@
     Access-Control-Allow-Headers = "Content-Type"
 
 # ---------- SPA fallback (static files take precedence) ----------
+# First ensure API routes are excluded from SPA rewrite
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to   = "/pages/index.html"
