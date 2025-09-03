@@ -139,38 +139,48 @@
           </div>
         </div>
 
-        <!-- Remaining slots -->
-       <div class="slot" id="player-hand-2">
-  <div class="mini-card frameType" data-frame="">
-    <div class="frameType-inner">
-      <div class="card-header">
-        <div class="card-id"></div>
-        <div class="card-name"><span></span></div>
-        <div class="card-icon"></div>
-      </div>
-      <div class="card-art">
-        <img src="" alt="">
-        <div class="stat-orb stat-blue"></div>
-        <div class="stat-orb stat-red"></div>
-        <div class="stat-orb stat-green"></div>
-      </div>
-      <div class="type-banner">
-        <div><span></span></div>
-        <div><span></span></div>
-        <div><span></span></div>
-      </div>
-      <div class="effect-box"></div>
-      <div class="meta-block">
-        <div class="meta-line"><div class="meta-label">Sets -</div><div></div></div>
-        <div class="meta-line"><div class="meta-label">Tags -</div><div></div></div>
-      </div>
-      <div class="meta-bottom">
-        <div class="meta-footer-text"></div>
-        <div class="rarity"></div>
+      <!-- PLAYER HAND -->
+<div class="zone player-hand">
+  <div class="slot" id="player-hand-1"></div>
+
+  <!-- 🚩 Slot 2 is now a summon-style card -->
+  <div class="slot" id="player-hand-2">
+    <div class="frameType" id="summon-card-2">
+      <div class="frameType-inner">
+        <div class="card-header">
+          <div class="card-id" id="card-id-2"></div>
+          <div class="card-name"><span id="card-name-2"></span></div>
+          <div class="card-icon" id="card-icon-2"></div>
+        </div>
+        <div class="card-art">
+          <img id="card-image-2" alt="">
+          <div class="stat-orb stat-blue"  id="level-2"></div>
+          <div class="stat-orb stat-red"   id="atk-2"></div>
+          <div class="stat-orb stat-green" id="def-2"></div>
+        </div>
+        <div class="type-banner">
+          <div><span id="tribute-2"></span></div>
+          <div><span id="about-2"></span></div>
+          <div><span id="type-emoji-2"></span></div>
+        </div>
+        <div class="effect-box" id="effect-box-2"></div>
+        <div class="meta-block">
+          <div class="meta-line"><div class="meta-label">Sets -</div><div id="sets-line-2"></div></div>
+          <div class="meta-line"><div class="meta-label">Tags -</div><div id="tags-line-2"></div></div>
+        </div>
+        <div class="meta-bottom">
+          <div class="meta-footer-text" id="footer-2"></div>
+          <div class="rarity" id="rarity-2"></div>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="slot" id="player-hand-3"></div>
+  <div class="slot" id="player-hand-4"></div>
+  <div class="slot" id="player-hand-5"></div>
 </div>
+
 
         <div class="slot" id="player-hand-3"></div>
         <div class="slot" id="player-hand-4"></div>
