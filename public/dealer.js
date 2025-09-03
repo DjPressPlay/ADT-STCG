@@ -1,5 +1,5 @@
 // dealer.js
-import { CardLibrary } from "./card_library.js";
+import { CardLibrary } from "./assets/card_library.js";
 
 const $ = id => document.getElementById(id);
 
