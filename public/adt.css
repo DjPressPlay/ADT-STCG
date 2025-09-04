@@ -26,14 +26,19 @@ html, body {
   gap: 12px;
   border-top: 3px solid #000;
 }
-.map-section:first-child { border-top: none; }
+
+.map-section:first-child {
+  border-top: none;
+}
 
 .cpu-section {
   background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/1*rd76wCu4QjZcQWV9wraB_g.png") center/cover no-repeat;
 }
+
 .shared-section {
   background: url("https://tools.toywiz.com/_images/_webp/_products/lg/legacyvaliantplaymat.webp") center/cover no-repeat;
 }
+
 .player-section {
   background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/0*gtZUOQrS_bCJXFtO") center/cover no-repeat;
 }
@@ -56,51 +61,21 @@ html, body {
   justify-content: center;
 }
 
-/* thumbnail inside slot */
+/* Thumbnail inside slot */
 .card-thumbnail {
   width: 100%;
   height: 100%;
-  border: 2px solid #666;
-  border-radius: 6px;
-  background: #111;
+  border-radius: 4px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   cursor: pointer;
 }
 .card-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-/* overlay styles */
-#card-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  display: none;          /* hidden by default */
-  align-items: center;
-  justify-content: center;
-}
-#card-overlay.active { display: flex; }
-
-#card-overlay .overlay-bg {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
-}
-#card-overlay .overlay-card {
-  position: relative;
-  z-index: 100000;
-  width: clamp(320px, 60vw, 420px);
-  height: auto;
-  transform: scale(1);
-  transition: transform 0.2s ease;
-}
-#card-overlay .overlay-card:hover {
-  transform: scale(1.05);
 }
 
 
