@@ -237,9 +237,18 @@
 .mini-card {
   width: 100%;
   height: 100%;
-  transform: scale(0.35);   /* adjust to fit slot */
-  transform-origin: top left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.mini-card .frameType {
+  width: 100%;
+  height: 100%;
+  transform: scale(0.9);  /* optional slight shrink so borders fit */
+  transform-origin: center;
+}
+
 
 
 
