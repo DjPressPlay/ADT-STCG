@@ -135,6 +135,23 @@ rewrite the whole thing
   font-size: 0.5rem;
   border-width: 1px;
 }
+/* Ensure effects are always visible */
+.mini-card .effect-box {
+  display: block;
+  max-height: none;    /* don’t clip text */
+  overflow: visible;   /* let it expand */
+  font-size: 0.55rem;  /* small but readable */
+  line-height: 1.2;
+  padding: 2px 3px;
+  color: #fff;
+}
+.mini-card .effect-entry {
+  margin-bottom: 2px;
+}
+.mini-card .effect-text {
+  white-space: normal;   /* allow wrapping */
+  word-break: break-word;
+}
 
 
 
