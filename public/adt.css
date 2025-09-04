@@ -7,6 +7,7 @@ html, body {
   background: #111;
 }
 
+/* === BOARD === */
 .board-container {
   width: 100vw;
   height: 100vh;
@@ -26,19 +27,14 @@ html, body {
   gap: 12px;
   border-top: 3px solid #000;
 }
-
-.map-section:first-child {
-  border-top: none;
-}
+.map-section:first-child { border-top: none; }
 
 .cpu-section {
   background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/1*rd76wCu4QjZcQWV9wraB_g.png") center/cover no-repeat;
 }
-
 .shared-section {
   background: url("https://tools.toywiz.com/_images/_webp/_products/lg/legacyvaliantplaymat.webp") center/cover no-repeat;
 }
-
 .player-section {
   background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/0*gtZUOQrS_bCJXFtO") center/cover no-repeat;
 }
@@ -49,7 +45,7 @@ html, body {
   gap: 12px;
 }
 
-/* --- SLOT --- */
+/* === SLOT === */
 .slot {
   width: 80px;
   height: 120px;
@@ -60,7 +56,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0; /* always fixed size */
+  flex-shrink: 0; /* stay fixed size */
 }
 
 .slot .card-wrapper {
@@ -71,7 +67,7 @@ html, body {
   justify-content: center;
 }
 
-/* --- MINI CARD (board version) --- */
+/* === MINI CARD (board version) === */
 .mini-card {
   width: 100%;
   height: 100%;
@@ -99,7 +95,7 @@ html, body {
 }
 
 .mini-card .card-art {
-  height: 50%;   /* balanced art size */
+  height: 48%;   /* balanced art size */
   margin: 1px;
   border-width: 1px;
 }
@@ -116,38 +112,36 @@ html, body {
   border-width: 1px;
 }
 
-/* effects text stays readable */
+/* === EFFECTS === */
 .mini-card .effect-box {
   display: block;
-  max-height: 40px;
-  overflow: auto;
+  max-height: 36px;     /* prevent card from overflowing */
+  overflow-y: auto;
   font-size: 0.55rem;
   line-height: 1.2;
   padding: 2px 3px;
   color: #fff;
 }
-.mini-card .effect-entry {
-  margin-bottom: 2px;
-}
+.mini-card .effect-entry { margin-bottom: 2px; }
 .mini-card .effect-text {
   white-space: normal;
   word-break: break-word;
 }
 
-/* --- INTERACTION --- */
+/* === INTERACTION === */
 .zone .frameType {
   width: 100%;
   height: 100%;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
-
 .zone .frameType:hover {
-  transform: scale(1.1); /* subtle grow */
+  transform: scale(1.1);
   z-index: 20;
   box-shadow: 0 0 12px rgba(0,255,255,0.6),
               0 0 20px rgba(255,0,255,0.4);
 }
+
 
 
 
