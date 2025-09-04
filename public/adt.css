@@ -54,18 +54,27 @@
   border: 2px solid #666;
   border-radius: 6px;
   background: #222;
-  overflow: hidden;        /* clip the scaled card */
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* The wrapper scales the summon card proportionally */
 .slot .card-wrapper {
-  transform: scale(0.2);   /* adjust this until it fits */
-  transform-origin: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.slot .frameType {
+  width: 100%;
+  height: 100%;
+  transform: scale(1);       /* keep natural proportions */
+  transform-origin: center;  /* center card */
+  object-fit: contain;
+}
 
     .battle-counter {
       width: 60px;
