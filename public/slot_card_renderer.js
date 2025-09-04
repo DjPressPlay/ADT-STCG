@@ -1,13 +1,13 @@
+// public/slot_card_renderer.js
 export function renderSlotCard(zoneId, card, { mini = true } = {}) {
   const zone = document.getElementById(zoneId);
   if (!zone) return;
 
   const wrapper = document.createElement("div");
   wrapper.classList.add("card-wrapper");
-  if (mini) wrapper.classList.add("mini-card"); // shrink version for board
 
   wrapper.innerHTML = `
-    <div class="frameType" data-frame="${card.frameType || ""}">
+    <div class="frameType ${mini ? "mini-card" : ""}" data-frame="${card.frameType || ""}">
       <div class="frameType-inner">
         <div class="card-header">
           <div class="card-id">${card.id || ""}</div>
@@ -27,7 +27,8 @@ export function renderSlotCard(zoneId, card, { mini = true } = {}) {
         </div>
         <div class="effect-box">
           ${(card.effects || [])
-            .map(e => `
+            .map(
+              e => `
               <div class="effect-entry">
                 <div class="effect-bar">
                   <div>${e.icons || ""}</div>
@@ -35,7 +36,8 @@ export function renderSlotCard(zoneId, card, { mini = true } = {}) {
                 </div>
                 <div class="effect-text">${e.text || ""}</div>
               </div>
-            `)
+            `
+            )
             .join("")}
         </div>
         <div class="meta-block">
