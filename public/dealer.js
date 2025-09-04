@@ -27,16 +27,15 @@ export const Dealer = {
   startGame() {
     console.log("🎮 Dealing cards...");
 
-    // Deal two cards into player-hand-1 and player-hand-2
-    const c1 = this.drawCard();
-    if (c1) renderSlotCard("player-hand-1", c1);
+    // Example: deal 2 cards to player hand zone
+    for (let i = 0; i < 2; i++) {
+      const card = this.drawCard();
+      if (card) renderSlotCard("player-hand", card);
+    }
 
-    const c2 = this.drawCard();
-    if (c2) renderSlotCard("player-hand-2", c2);
-
-    // Deal one card into cpu-hand-1
-    const cpuC1 = this.drawCard();
-    if (cpuC1) renderSlotCard("cpu-hand-1", cpuC1);
+    // Example: deal 1 card to cpu hand zone
+    const cpuCard = this.drawCard();
+    if (cpuCard) renderSlotCard("cpu-hand", cpuCard);
   },
 };
 
