@@ -1,10 +1,10 @@
-// public/slot_card_renderer.js
+// slot_card_renderer.js
 export function renderSlotCard(slotId, card) {
   const slot = document.getElementById(slotId);
   if (!slot) return;
 
   slot.innerHTML = `
-    <div class="frameType" data-frame="${card.frameType || ""}">
+    <div class="mini-card frameType" data-frame="${card.frameType || ""}">
       <div class="frameType-inner">
         <div class="card-header">
           <div class="card-id">${card.id || ""}</div>
