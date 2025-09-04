@@ -3,9 +3,9 @@ export function renderSlotCard(zoneId, card, { mini = true } = {}) {
   const zone = document.getElementById(zoneId);
   if (!zone) return;
 
-  // Create a slot container if not already present
-  const slot = document.createElement("div");
-  slot.classList.add("slot"); // use the same size as your gray placeholders
+  // Clear slot if it already exists (avoid stacking multiple cards)
+  const slot = document.getElementById(zoneId);
+  if (!slot) return;
 
   const wrapper = document.createElement("div");
   wrapper.classList.add("card-wrapper");
@@ -62,9 +62,28 @@ export function renderSlotCard(zoneId, card, { mini = true } = {}) {
     </div>
   `;
 
-  // Put card inside wrapper, then inside slot
-  slot.appendChild(wrapper);
+  // attach overlay behavior
+  wrapper.querySelector(".frameType").addEventListener("click", () => {
+    const overlay = document.getElementById("card-overlay");
+    const overlayCard = overlay.querySelector(".overlay-card");
+    overlayCard.innerHTML = wrapper.innerHTML; // copy card
+    overlay.style.display = "flex";
+  });
 
-  // Append the slot into the zone
-  zone.appendChild(slot);
+  // put card inside slot (slot already exists in adt.html)
+  zone.innerHTML = ""; // clear slot before appending
+  zone.appendChild(wrapper);
 }
+
+// Overlay close handler (once, globally)
+document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("card-overlay");
+  if (overlay) {
+    const bg = overlay.querySelector(".overlay-bg");
+    if (bg) {
+      bg.addEventListener("click", () => {
+        overlay.style.display = "none";
+      });
+    }
+  }
+});
