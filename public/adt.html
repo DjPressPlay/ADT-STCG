@@ -58,21 +58,6 @@
       box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
     }
 
-    .card {
-      width: 150px;
-      height: 210px;
-      border: 2px solid #0ff;
-      border-radius: 8px;
-      background: linear-gradient(135deg, #222, #333);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #0ff;
-      font-size: 14px;
-      text-align: center;
-      box-shadow: 0 0 15px rgba(0,255,255,0.4);
-    }
-
     .counter {
       font-size: 28px;
       font-weight: bold;
@@ -84,9 +69,9 @@
 
   <!-- Battle Zone -->
   <div class="battle-zone">
-    <div class="card-slot" id="cpu-battle">CPU</div>
+    <div class="card-slot" id="cpu-battle"></div>
     <div class="counter" id="counter">0</div>
-    <div class="card-slot" id="player-battle">PLAYER</div>
+    <div class="card-slot" id="player-battle"></div>
   </div>
 
   <!-- Deck bottom-right -->
@@ -94,22 +79,19 @@
     DECK
   </div>
 
+  <script src="assets/card_library.js"></script>
+  <script src="assets/deck.js"></script>
+  <script src="slot_card_renderer.js"></script>
   <script>
-    const deck = document.getElementById("deck");
+    const deckEl = document.getElementById("deck");
     const playerBattle = document.getElementById("player-battle");
 
-    // Mock card draw
-    function drawCard() {
-      const card = document.createElement("div");
-      card.classList.add("card");
-      card.textContent = "Summoned Card";
-      return card;
-    }
-
-    // Click deck to summon card to player battle zone
-    deck.addEventListener("click", () => {
-      playerBattle.innerHTML = ""; // clear placeholder text
-      playerBattle.appendChild(drawCard());
+    deckEl.addEventListener("click", () => {
+      const card = Deck.drawCard(); // pull next card from real deck
+      if (card) {
+        playerBattle.innerHTML = ""; // clear slot
+        playerBattle.appendChild(renderCard(card)); // render real card
+      }
     });
   </script>
 </body>
