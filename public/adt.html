@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,11 +11,13 @@
       width: 100vw;
       background: #111;
       display: flex;
-      justify-content: flex-end;
-      align-items: flex-end;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      font-family: sans-serif;
     }
 
-    /* Deck container bottom-right */
+    /* Deck bottom-right */
     .deck-container {
       width: 160px;
       height: 220px;
@@ -29,12 +30,50 @@
       justify-content: center;
       align-items: center;
       color: cyan;
-      font-family: sans-serif;
+      align-self: flex-end; /* push deck to right */
+    }
+
+    /* Battle Zone (vertical stack) */
+    .battle-zone {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .card-slot {
+      width: 160px;
+      height: 220px;
+      border: 3px solid #555;
+      border-radius: 10px;
+      background: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #777;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    /* Small counter between slots */
+    .counter {
+      font-size: 28px;
+      font-weight: bold;
+      color: #0ff;
     }
   </style>
 </head>
 <body>
-  <!-- Deck sits bottom-right -->
+
+  <!-- Battle Zone -->
+  <div class="battle-zone">
+    <div class="card-slot" id="cpu-battle">CPU</div>
+    <div class="counter">0</div>
+    <div class="card-slot" id="player-battle">PLAYER</div>
+  </div>
+
+  <!-- Deck bottom-right -->
   <div class="deck-container" id="deck">
     DECK
   </div>
