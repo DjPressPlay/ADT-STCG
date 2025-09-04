@@ -93,65 +93,6 @@ rewrite the whole thing
   object-fit: cover;
 }
 
-/* Mini-cards on the board */
-.mini-card {
-  width: 80px;       /* shrink width */
-  height: 120px;     /* shrink height */
-  margin: 2px;
-  transform: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mini-card .frameType,
-.mini-card .frameType-inner {
-  width: 100%;
-  height: 100%;
-  border-width: 2px;   /* smaller border */
-}
-
-.mini-card .card-header,
-.mini-card .type-banner,
-.mini-card .effect-box,
-.mini-card .meta-block,
-.mini-card .meta-bottom {
-  font-size: 0.55rem;  /* smaller text */
-  padding: 2px 3px;
-}
-
-.mini-card .card-art {
-  height: 45%;         /* art takes less space */
-  margin: 1px;
-  border-width: 1px;
-}
-.mini-card .card-art img {
-  object-fit: cover;
-}
-
-.mini-card .stat-orb {
-  width: 14px;
-  height: 14px;
-  font-size: 0.5rem;
-  border-width: 1px;
-}
-/* Ensure effects are always visible */
-.mini-card .effect-box {
-  display: block;
-  max-height: none;    /* don’t clip text */
-  overflow: visible;   /* let it expand */
-  font-size: 0.55rem;  /* small but readable */
-  line-height: 1.2;
-  padding: 2px 3px;
-  color: #fff;
-}
-.mini-card .effect-entry {
-  margin-bottom: 2px;
-}
-.mini-card .effect-text {
-  white-space: normal;   /* allow wrapping */
-  word-break: break-word;
-}
 
 
 
