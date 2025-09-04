@@ -3,6 +3,10 @@ export function renderSlotCard(zoneId, card, { mini = true } = {}) {
   const zone = document.getElementById(zoneId);
   if (!zone) return;
 
+  // Create a slot container if not already present
+  const slot = document.createElement("div");
+  slot.classList.add("slot"); // use the same size as your gray placeholders
+
   const wrapper = document.createElement("div");
   wrapper.classList.add("card-wrapper");
 
@@ -58,5 +62,9 @@ export function renderSlotCard(zoneId, card, { mini = true } = {}) {
     </div>
   `;
 
-  zone.appendChild(wrapper);
+  // Put card inside wrapper, then inside slot
+  slot.appendChild(wrapper);
+
+  // Append the slot into the zone
+  zone.appendChild(slot);
 }
