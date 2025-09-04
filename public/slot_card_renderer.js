@@ -1,4 +1,4 @@
-// slot_card_renderer.js
+// public/slot_card_renderer.js
 export function renderSlotCard(slotId, card) {
   const slot = document.getElementById(slotId);
   if (!slot) return;
@@ -23,15 +23,27 @@ export function renderSlotCard(slotId, card) {
           <div><span>${card.icon || ""}</span></div>
         </div>
         <div class="effect-box">
-          ${(card.effects || []).map(e => `
-            <div class="effect-entry">
-              <div class="effect-bar"><div>${e.icons || ""}</div><div>${e.emoji || ""}</div></div>
-              <div class="effect-text">${e.text || ""}</div>
-            </div>`).join("")}
+          ${(card.effects || [])
+            .map(e => `
+              <div class="effect-entry">
+                <div class="effect-bar">
+                  <div>${e.icons || ""}</div>
+                  <div>${e.emoji || ""}</div>
+                </div>
+                <div class="effect-text">${e.text || ""}</div>
+              </div>
+            `)
+            .join("")}
         </div>
         <div class="meta-block">
-          <div class="meta-line"><div class="meta-label">Sets -</div><div>${(card.card_sets || []).join(" ")}</div></div>
-          <div class="meta-line"><div class="meta-label">Tags -</div><div>${(card.tags || []).join(" ")}</div></div>
+          <div class="meta-line">
+            <div class="meta-label">Sets -</div>
+            <div>${(card.card_sets || []).join(" ")}</div>
+          </div>
+          <div class="meta-line">
+            <div class="meta-label">Tags -</div>
+            <div>${(card.tags || []).join(" ")}</div>
+          </div>
         </div>
         <div class="meta-bottom">
           <div class="meta-footer-text">${card.footer || ""}</div>
