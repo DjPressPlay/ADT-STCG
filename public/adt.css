@@ -1,53 +1,55 @@
- html, body {
-      margin: 0;
-      padding: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      background: #111;
-    }
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #111;
+}
 
-    .board-container {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      border: 8px solid #222;
-      border-radius: 18px;
-      box-shadow: inset 0 0 0 6px #0ff;
-    }
+.board-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border: 8px solid #222;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 6px #0ff;
+}
 
-    .map-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      border-top: 3px solid #000;
-    }
+.map-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-top: 3px solid #000;
+}
 
-    .map-section:first-child {
-      border-top: none;
-    }
+.map-section:first-child {
+  border-top: none;
+}
 
-    .cpu-section {
-      background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/1*rd76wCu4QjZcQWV9wraB_g.png") center/cover no-repeat;
-    }
+.cpu-section {
+  background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/1*rd76wCu4QjZcQWV9wraB_g.png") center/cover no-repeat;
+}
 
-    .shared-section {
-      background: url("https://tools.toywiz.com/_images/_webp/_products/lg/legacyvaliantplaymat.webp") center/cover no-repeat;
-    }
+.shared-section {
+  background: url("https://tools.toywiz.com/_images/_webp/_products/lg/legacyvaliantplaymat.webp") center/cover no-repeat;
+}
 
-    .player-section {
-      background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/0*gtZUOQrS_bCJXFtO") center/cover no-repeat;
-    }
+.player-section {
+  background: url("https://miro.medium.com/v2/resize:fit:1100/format:webp/0*gtZUOQrS_bCJXFtO") center/cover no-repeat;
+}
 
-    .zone {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-    }
+.zone {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* --- SLOT --- */
 .slot {
   width: 80px;
   height: 120px;
@@ -58,6 +60,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0; /* always fixed size */
 }
 
 .slot .card-wrapper {
@@ -68,35 +71,10 @@
   justify-content: center;
 }
 
-.slot .frameType,
-.slot .frameType-inner {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  border-width: 3px;   /* thinner borders for slot fit */
-}
-
-/* Slot art fills the space cleanly */
-.slot .card-art {
-  width: 100%;
-  height: 55%;         /* proportional to slot */
-  margin: 0;
-  border-width: 2px;
-  aspect-ratio: auto;  /* stop 4/3 squish */
-}
-
-.slot .card-art img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Mini-cards on the board */
+/* --- MINI CARD (board version) --- */
 .mini-card {
-  width: 80px;       /* shrink width */
-  height: 120px;     /* shrink height */
-  margin: 2px;
-  transform: none;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,7 +84,9 @@
 .mini-card .frameType-inner {
   width: 100%;
   height: 100%;
-  border-width: 2px;   /* smaller border */
+  border-width: 2px;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
 
 .mini-card .card-header,
@@ -114,16 +94,18 @@
 .mini-card .effect-box,
 .mini-card .meta-block,
 .mini-card .meta-bottom {
-  font-size: 0.55rem;  /* smaller text */
+  font-size: 0.55rem;
   padding: 2px 3px;
 }
 
 .mini-card .card-art {
-  height: 45%;         /* art takes less space */
+  height: 50%;   /* balanced art size */
   margin: 1px;
   border-width: 1px;
 }
 .mini-card .card-art img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -133,12 +115,13 @@
   font-size: 0.5rem;
   border-width: 1px;
 }
-/* Ensure effects are always visible */
+
+/* effects text stays readable */
 .mini-card .effect-box {
   display: block;
-  max-height: none;    /* don’t clip text */
-  overflow: visible;   /* let it expand */
-  font-size: 0.55rem;  /* small but readable */
+  max-height: 40px;
+  overflow: auto;
+  font-size: 0.55rem;
   line-height: 1.2;
   padding: 2px 3px;
   color: #fff;
@@ -147,35 +130,23 @@
   margin-bottom: 2px;
 }
 .mini-card .effect-text {
-  white-space: normal;   /* allow wrapping */
+  white-space: normal;
   word-break: break-word;
 }
 
-
-/* Cards rendered on the board should match slot size */
-.zone .card-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* --- INTERACTION --- */
 .zone .frameType {
   width: 100%;
   height: 100%;
-  border-width: 2px;
-  border-radius: 6px;
-  overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
-/* Grow effect on hover */
 .zone .frameType:hover {
-  transform: scale(1.2);
+  transform: scale(1.1); /* subtle grow */
   z-index: 20;
-  box-shadow: 0 0 20px rgba(0,255,255,0.6),
-              0 0 30px rgba(255,0,255,0.5);
+  box-shadow: 0 0 12px rgba(0,255,255,0.6),
+              0 0 20px rgba(255,0,255,0.4);
 }
 
 
