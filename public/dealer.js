@@ -1,14 +1,9 @@
-
-// DealerController.js
-// New Dealer — pulls cards from Deck and renders them into slots.
-
-import { Deck } from "./deck.js";
+// public/dealer.js
+import { Deck } from "./assets/deck.js";
 import { renderSlotCard } from "./slot_card_renderer.js";
 
 export const Dealer = {
   deck: [],
-  graveyard: [],
-  hand: [],
 
   init() {
     this.loadDeck();
@@ -16,8 +11,8 @@ export const Dealer = {
   },
 
   loadDeck() {
-    this.deck = [...Deck]; // copy deck
-    // optional shuffle
+    this.deck = [...Deck];
+    // shuffle
     for (let i = this.deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
@@ -25,29 +20,27 @@ export const Dealer = {
   },
 
   drawCard() {
-    if (this.deck.length === 0) return null;
-    const card = this.deck.shift();
-    this.hand.push(card);
-    return card;
+    if (!this.deck.length) return null;
+    return this.deck.shift();
   },
 
   startGame() {
-    console.log("🎮 Game started");
+    console.log("🎮 Dealing cards...");
 
-    // Example → deal 2 cards into player hand slots
+    // Deal two cards into player-hand-1 and player-hand-2
     const c1 = this.drawCard();
     if (c1) renderSlotCard("player-hand-1", c1);
 
     const c2 = this.drawCard();
     if (c2) renderSlotCard("player-hand-2", c2);
 
-    // Example → deal 1 card into CPU hand slot
+    // Deal one card into cpu-hand-1
     const cpuC1 = this.drawCard();
     if (cpuC1) renderSlotCard("cpu-hand-1", cpuC1);
   },
 };
 
-// Auto-init when DOM ready
+// Auto-run
 window.addEventListener("DOMContentLoaded", () => {
   Dealer.init();
 });
