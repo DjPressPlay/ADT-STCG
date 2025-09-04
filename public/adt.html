@@ -34,23 +34,11 @@
       <div id="cpu-grave" class="grave grave-cpu"></div>
       <div id="cpu-burn" class="burn burn-cpu"></div>
 
-      <!-- HAND -->
-      <div class="zone cpu-hand">
-        <div class="slot" id="cpu-hand-1"></div>
-        <div class="slot" id="cpu-hand-2"></div>
-        <div class="slot" id="cpu-hand-3"></div>
-        <div class="slot" id="cpu-hand-4"></div>
-        <div class="slot" id="cpu-hand-5"></div>
-        <div class="slot" id="cpu-hand-6" style="display:none;"></div>
-        <div class="slot" id="cpu-hand-7" style="display:none;"></div>
-      </div>
+      <!-- HAND (cards injected here) -->
+      <div class="zone cpu-hand" id="cpu-hand"></div>
 
-      <!-- TRAPS -->
-      <div class="zone cpu-traps">
-        <div class="slot" id="cpu-trap-1"></div>
-        <div class="slot" id="cpu-trap-2"></div>
-        <div class="slot" id="cpu-trap-3"></div>
-      </div>
+      <!-- TRAPS (cards injected here) -->
+      <div class="zone cpu-traps" id="cpu-traps"></div>
     </div>
 
     <!-- CPU HUD -->
@@ -65,13 +53,9 @@
 
     <!-- SHARED BATTLE ZONE -->
     <div class="map-section shared-section">
-      <div class="zone cpu-battle">
-        <div class="slot" id="cpu-battle-1"></div>
-      </div>
+      <div class="zone cpu-battle" id="cpu-battle"></div>
       <div class="battle-counter" id="battle-counter">3</div>
-      <div class="zone player-battle">
-        <div class="slot" id="player-battle-1"></div>
-      </div>
+      <div class="zone player-battle" id="player-battle"></div>
       <div id="game-message" class="message-box">Waiting...</div>
     </div>
 
@@ -87,29 +71,16 @@
 
     <!-- PLAYER MAT -->
     <div class="map-section player-section">
-
       <!-- Floating -->
       <div id="player-deck" class="deck player-deck"></div>
       <div id="player-grave" class="grave grave-player"></div>
       <div id="player-burn" class="burn burn-player"></div>
 
-      <!-- TRAPS -->
-      <div class="zone player-traps">
-        <div class="slot" id="player-trap-1"></div>
-        <div class="slot" id="player-trap-2"></div>
-        <div class="slot" id="player-trap-3"></div>
-      </div>
+      <!-- TRAPS (cards injected here) -->
+      <div class="zone player-traps" id="player-traps"></div>
 
-      <!-- HAND -->
-      <div class="zone player-hand">
-        <div class="slot" id="player-hand-1"></div>
-        <div class="slot" id="player-hand-2"></div>
-        <div class="slot" id="player-hand-3"></div>
-        <div class="slot" id="player-hand-4"></div>
-        <div class="slot" id="player-hand-5"></div>
-        <div class="slot" id="player-hand-6" style="display:none;"></div>
-        <div class="slot" id="player-hand-7" style="display:none;"></div>
-      </div>
+      <!-- HAND (cards injected here) -->
+      <div class="zone player-hand" id="player-hand"></div>
     </div>
   </div>
 </body>
