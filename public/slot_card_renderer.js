@@ -1,17 +1,10 @@
-// public/slot_card_renderer.js
-
-/**
- * Render a card into a given zone (hand, traps, battle, etc.)
- * @param {string} zoneId - The ID of the zone container (e.g. "player-hand")
- * @param {object} card   - Card data object
- */
-export function renderSlotCard(zoneId, card) {
+export function renderSlotCard(zoneId, card, { mini = true } = {}) {
   const zone = document.getElementById(zoneId);
   if (!zone) return;
 
-  // Create card wrapper element
   const wrapper = document.createElement("div");
-  wrapper.classList.add("card-wrapper", "mini-card"); // mini-card ensures slot styling
+  wrapper.classList.add("card-wrapper");
+  if (mini) wrapper.classList.add("mini-card"); // shrink version for board
 
   wrapper.innerHTML = `
     <div class="frameType" data-frame="${card.frameType || ""}">
@@ -63,6 +56,5 @@ export function renderSlotCard(zoneId, card) {
     </div>
   `;
 
-  // Append card into the zone
   zone.appendChild(wrapper);
 }
