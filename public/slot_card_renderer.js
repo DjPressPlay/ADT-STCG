@@ -1,12 +1,7 @@
-// slot_card_renderer.js
-// Build a mini card inside a given slot
-
+// public/slot_card_renderer.js
 export function renderSlotCard(slotId, card) {
   const slot = document.getElementById(slotId);
   if (!slot) return;
-
-  // wipe slot first
-  slot.innerHTML = "";
 
   slot.innerHTML = `
     <div class="frameType" data-frame="${card.frameType || ""}">
