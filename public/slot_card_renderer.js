@@ -1,11 +1,10 @@
-// public/slot_card_renderer.js
 export function renderSlotCard(zoneId, card, { mini = true } = {}) {
   const zone = document.getElementById(zoneId);
   if (!zone) return;
 
-  // Clear slot if it already exists (avoid stacking multiple cards)
-  const slot = document.getElementById(zoneId);
-  if (!slot) return;
+  // Create a slot container
+  const slot = document.createElement("div");
+  slot.classList.add("slot");
 
   const wrapper = document.createElement("div");
   wrapper.classList.add("card-wrapper");
@@ -62,28 +61,24 @@ export function renderSlotCard(zoneId, card, { mini = true } = {}) {
     </div>
   `;
 
-  // attach overlay behavior
+  // Attach click to open overlay
   wrapper.querySelector(".frameType").addEventListener("click", () => {
     const overlay = document.getElementById("card-overlay");
     const overlayCard = overlay.querySelector(".overlay-card");
-    overlayCard.innerHTML = wrapper.innerHTML; // copy card
+    overlayCard.innerHTML = wrapper.innerHTML; // clone card content
     overlay.style.display = "flex";
   });
 
-  // put card inside slot (slot already exists in adt.html)
-  zone.innerHTML = ""; // clear slot before appending
-  zone.appendChild(wrapper);
+  slot.appendChild(wrapper);
+  zone.appendChild(slot);
 }
 
-// Overlay close handler (once, globally)
-document.addEventListener("DOMContentLoaded", () => {
+// Close overlay when clicking background
+window.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("card-overlay");
   if (overlay) {
-    const bg = overlay.querySelector(".overlay-bg");
-    if (bg) {
-      bg.addEventListener("click", () => {
-        overlay.style.display = "none";
-      });
-    }
+    overlay.querySelector(".overlay-bg").addEventListener("click", () => {
+      overlay.style.display = "none";
+    });
   }
 });
