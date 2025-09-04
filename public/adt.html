@@ -7,8 +7,9 @@
 
   <!-- scripts -->
   <script src="adt.js"></script>
- 
+  <script type="module" src="./card_library.js"></script>
   <script type="module" src="./dealer.js"></script>
+  <script type="module" src="./slot_card_renderer.js"></script>
 
   <!-- styles -->
   <link rel="stylesheet" href="adt.css" />
@@ -101,9 +102,8 @@
 
       <!-- HAND -->
       <div class="zone player-hand">
-      <div class="slot" id="player-hand-1">
-      <!-- 🚩 Slot 2 is now a summon-style card -->
-       <div class="slot" id="player-hand-2">
+        <div class="slot" id="player-hand-1"></div>
+        <div class="slot" id="player-hand-2"></div>
         <div class="slot" id="player-hand-3"></div>
         <div class="slot" id="player-hand-4"></div>
         <div class="slot" id="player-hand-5"></div>
