@@ -2,85 +2,100 @@
 // Jessica Crawl — clean metadata with robust fallbacks
 // Accepts: { links: [...], session? } or { url:"..." }
 // Returns: { session, results:[{ url,title,description,image,siteName,author,profile,keywords,rawHTMLLength,enrich?,frameType? }] }
+// netlify/functions/crawl.js
+// Jessica Crawl — clean metadata with robust fallbacks
 
-// netlify/functions/crawl.js (Fixed for Netlify runtime)
 
 const PLACEHOLDER_IMG = "https://miro.medium.com/v2/resize:fit:786/format:webp/1*l0k-78eTSOaUPijHdWIhkQ.png";
 
+
 exports.handler = async (event) => {
-  try {
-    if (event.httpMethod === "OPTIONS") return resText(204, "");
-    if (event.httpMethod !== "POST") return resText(405, "Method Not Allowed");
+try {
+if (event.httpMethod === "OPTIONS") return resText(204, "");
+if (event.httpMethod !== "POST") return resText(405, "Method Not Allowed");
 
-    const body = safeJSON(event.body);
-    if (!body) return resJSON(400, { error: "Invalid JSON body" });
 
-    const links = Array.isArray(body.links) ? body.links : (body.url ? [body.url] : []);
-    if (!links.length) return resJSON(400, { error: "No links provided" });
-    const session = body.session || "";
+const body = safeJSON(event.body);
+if (!body) return resJSON(400, { error: "Invalid JSON body" });
 
-    const results = [];
-    for (const rawUrl of links) {
-      await (async () => {
-        let safeUrl = String(rawUrl).trim();
-        if (!/^https?:\/\//i.test(safeUrl)) safeUrl = "https://" + safeUrl;
 
-        try {
-          const o = await tryOEmbed(safeUrl);
-          if (o) {
-            o.type = "video"; // tag oEmbed type
-            results.push(o);
-            return;
-          }
+let links = [];
+if (Array.isArray(body.links) && body.links.length) links = body.links;
+else if (typeof body.url === "string" && body.url.trim()) links = [body.url];
 
-          const r = await fetch(safeUrl, {
-            redirect: "follow",
-            headers: {
-              "User-Agent": "Mozilla/5.0 (compatible; Jessica-SPZ/2.0; +https://example.org)",
-              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-              "Accept-Language": "en-US,en;q=0.9"
-            }
-          });
-          if (!r.ok) throw new Error(`Fetch ${r.status}`);
 
-          const html = await r.text();
-          const host = normalizeHost(safeUrl);
-          const video = bestVideo(html, safeUrl);
+const session = body.session || "";
+if (!links.length) return resJSON(400, { error: "No links provided" });
 
-          const card = {
-            url: safeUrl,
-            title: extractTitle(html) || host,
-            description: extractDescription(html) || "No description available",
-            image: absolutize(safeUrl, bestImage(html) || siteFavicon(safeUrl)),
-            siteName: extractSiteName(html) || host,
-            author: extractAuthor(html),
-            profile: extractProfile(html),
-            keywords: extractKeywords(html),
-            rawHTMLLength: html.length,
-            enrich: {
-              video,
-              canonical: findLinkHref(html, "canonical"),
-              icon: extractIcon(html, safeUrl)
-            }
-          };
 
-          if (video && /\.(mp4|webm|m3u8|mov|avi|flv|ogg)(\?.*)?$/i.test(video)) {
-            card.type = "video";
-          }
+const results = [];
 
-          const isVoid = !card.title || !card.description || !card.image;
-          results.push(isVoid ? { ...card, frameType: "void" } : card);
 
-        } catch (err) {
-          results.push({ url: safeUrl, error: String(err?.message || err) });
-        }
-      })();
-    }
+for (let rawUrl of links) {
+let safeUrl = String(rawUrl || "").trim();
+if (!/^https?:\/\//i.test(safeUrl)) safeUrl = "https://" + safeUrl;
 
-    return resJSON(200, { session, results });
-  } catch (err) {
-    return resJSON(500, { error: String(err?.message || err) });
-  }
+
+try {
+const o = await tryOEmbed(safeUrl);
+if (o) { results.push(o); continue; }
+
+
+const r = await fetch(safeUrl, {
+redirect: "follow",
+headers: {
+"User-Agent": "Mozilla/5.0 (compatible; Jessica-SPZ/2.0; +https://example.org)",
+"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+"Accept-Language": "en-US,en;q=0.9"
+}
+});
+
+
+if (!r.ok) throw new Error(`Fetch ${r.status}`);
+const html = await r.text();
+const host = normalizeHost(safeUrl);
+
+
+const title = extractTitle(html) || host;
+const description = extractDescription(html) || "No description available";
+const author = extractAuthor(html);
+const profile = extractProfile(html);
+const image = absolutize(safeUrl, bestImage(html) || "");
+const keywords = extractKeywords(html);
+const video = bestVideo(html, safeUrl);
+const siteName = extractSiteName(html) || host;
+
+
+const card = {
+url: safeUrl,
+title,
+description,
+image: image || siteFavicon(safeUrl),
+siteName,
+author,
+profile,
+keywords,
+rawHTMLLength: html.length,
+enrich: {
+video,
+canonical: findLinkHref(html, "canonical"),
+icon: extractIcon(html, safeUrl)
+}
+};
+
+
+const isVoid = !card.title || !card.description || !card.image;
+results.push(isVoid ? { ...card, frameType: "void" } : card);
+} catch (err) {
+results.push({ url: safeUrl, error: String(err?.message || err) });
+}
+}
+
+
+return resJSON(200, { session, results });
+} catch (err) {
+return resJSON(500, { error: String(err?.message || err) });
+}
 };
 
 
