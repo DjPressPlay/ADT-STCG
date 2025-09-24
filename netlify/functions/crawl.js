@@ -3,87 +3,86 @@
 // Accepts: { links: [...], session? } or { url:"..." }
 // Returns: { session, results:[{ url,title,description,image,siteName,author,profile,keywords,rawHTMLLength,enrich?,frameType? }] }
 
+// netlify/functions/crawl.js (Fixed for Netlify runtime)
 
+const PLACEHOLDER_IMG = "https://miro.medium.com/v2/resize:fit:786/format:webp/1*l0k-78eTSOaUPijHdWIhkQ.png";
 
+exports.handler = async (event) => {
+  try {
+    if (event.httpMethod === "OPTIONS") return resText(204, "");
+    if (event.httpMethod !== "POST") return resText(405, "Method Not Allowed");
 
+    const body = safeJSON(event.body);
+    if (!body) return resJSON(400, { error: "Invalid JSON body" });
 
-const body = safeJSON(event.body);
-if (!body) return resJSON(400, { error: "Invalid JSON body" });
+    const links = Array.isArray(body.links) ? body.links : (body.url ? [body.url] : []);
+    if (!links.length) return resJSON(400, { error: "No links provided" });
+    const session = body.session || "";
 
+    const results = [];
+    for (const rawUrl of links) {
+      await (async () => {
+        let safeUrl = String(rawUrl).trim();
+        if (!/^https?:\/\//i.test(safeUrl)) safeUrl = "https://" + safeUrl;
 
-const links = Array.isArray(body.links) ? body.links : (body.url ? [body.url] : []);
-if (!links.length) return resJSON(400, { error: "No links provided" });
-const session = body.session || "";
+        try {
+          const o = await tryOEmbed(safeUrl);
+          if (o) {
+            o.type = "video"; // tag oEmbed type
+            results.push(o);
+            return;
+          }
 
+          const r = await fetch(safeUrl, {
+            redirect: "follow",
+            headers: {
+              "User-Agent": "Mozilla/5.0 (compatible; Jessica-SPZ/2.0; +https://example.org)",
+              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "Accept-Language": "en-US,en;q=0.9"
+            }
+          });
+          if (!r.ok) throw new Error(`Fetch ${r.status}`);
 
-const results = [];
-for (const rawUrl of links) {
-let safeUrl = String(rawUrl).trim();
-if (!/^https?:\/\//i.test(safeUrl)) safeUrl = "https://" + safeUrl;
+          const html = await r.text();
+          const host = normalizeHost(safeUrl);
+          const video = bestVideo(html, safeUrl);
 
+          const card = {
+            url: safeUrl,
+            title: extractTitle(html) || host,
+            description: extractDescription(html) || "No description available",
+            image: absolutize(safeUrl, bestImage(html) || siteFavicon(safeUrl)),
+            siteName: extractSiteName(html) || host,
+            author: extractAuthor(html),
+            profile: extractProfile(html),
+            keywords: extractKeywords(html),
+            rawHTMLLength: html.length,
+            enrich: {
+              video,
+              canonical: findLinkHref(html, "canonical"),
+              icon: extractIcon(html, safeUrl)
+            }
+          };
 
-try {
-const oembed = await tryOEmbed(safeUrl);
-if (oembed) {
-oembed.type = "video"; // ✅ mark oEmbed content as video
-results.push(oembed);
-continue;
-}
+          if (video && /\.(mp4|webm|m3u8|mov|avi|flv|ogg)(\?.*)?$/i.test(video)) {
+            card.type = "video";
+          }
 
+          const isVoid = !card.title || !card.description || !card.image;
+          results.push(isVoid ? { ...card, frameType: "void" } : card);
 
-const r = await fetch(safeUrl, {
-redirect: "follow",
-headers: {
-"User-Agent": "Mozilla/5.0 (compatible; Jessica-SPZ/2.0; +https://example.org)",
-"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-"Accept-Language": "en-US,en;q=0.9"
-}
-});
+        } catch (err) {
+          results.push({ url: safeUrl, error: String(err?.message || err) });
+        }
+      })();
+    }
 
-
-if (!r.ok) throw new Error(`Fetch ${r.status}`);
-const html = await r.text();
-
-
-const video = bestVideo(html, safeUrl);
-const card = {
-url: safeUrl,
-title: extractTitle(html) || normalizeHost(safeUrl),
-description: extractDescription(html) || "No description available",
-image: absolutize(safeUrl, bestImage(html) || siteFavicon(safeUrl)),
-siteName: extractSiteName(html) || normalizeHost(safeUrl),
-author: extractAuthor(html),
-profile: extractProfile(html),
-keywords: extractKeywords(html),
-rawHTMLLength: html.length,
-enrich: {
-video,
-canonical: findLinkHref(html, "canonical"),
-icon: extractIcon(html, safeUrl)
-}
+    return resJSON(200, { session, results });
+  } catch (err) {
+    return resJSON(500, { error: String(err?.message || err) });
+  }
 };
 
-
-if (video && /\.(mp4|webm|m3u8|mov|avi|flv|ogg)(\?.*)?$/i.test(video)) {
-card.type = "video";
-}
-
-
-const isVoid = !card.title || !card.description || !card.image;
-results.push(isVoid ? { ...card, frameType: "void" } : card);
-
-
-} catch (err) {
-results.push({ url: safeUrl, error: String(err?.message || err) });
-}
-}
-
-
-return resJSON(200, { session, results });
-} catch (err) {
-return resJSON(500, { error: String(err?.message || err) });
-}
-};
 
 /* ---------------- helpers ---------------- */
 function resText(code, text) {
