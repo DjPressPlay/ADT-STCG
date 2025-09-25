@@ -113,6 +113,27 @@ rewrite the index
       transition: transform 0.2s ease;
     }
     .action-buttons button:hover { transform: scale(1.05); }
+
+.video-thumb {
+  position: relative;
+  cursor: pointer;
+}
+.video-thumb img {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+}
+.video-thumb .play-button {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  color: white;
+  text-shadow: 0 0 8px black;
+  pointer-events: none;
+}
+
+    
   </style>
 </head>
 <body>
