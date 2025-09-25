@@ -47,9 +47,9 @@ exports.handler = async (event) => {
         const description = extractDescription(html) || "No description available";
         const author = extractAuthor(html);
         const profile = extractProfile(html);
-        const image = absolutize(safeUrl, bestImage(html) || "");
         const keywords = extractKeywords(html);
-        const video = bestVideo(html, safeUrl);
+        const video = bestVideo(html, safeUrl); // ✅ video first
+        const image = !video ? absolutize(safeUrl, bestImage(html) || "") : ""; // fallback only if no video
         const siteName = extractSiteName(html) || host;
 
         // ✅ YouTube-specific metadata
@@ -84,7 +84,7 @@ exports.handler = async (event) => {
           }
         };
 
-        const isVoid = !card.title || !card.description || !card.image;
+        const isVoid = !card.title || !card.description || (!card.image && !card.enrich.video);
         results.push(isVoid ? { ...card, frameType: "void" } : card);
       } catch (err) {
         results.push({ url: safeUrl, error: String(err?.message || err) });
