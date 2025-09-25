@@ -2,102 +2,100 @@
 // Jessica Crawl — clean metadata with robust fallbacks
 // Accepts: { links: [...], session? } or { url:"..." }
 // Returns: { session, results:[{ url,title,description,image,siteName,author,profile,keywords,rawHTMLLength,enrich?,frameType? }] }
-// netlify/functions/crawl.js
-// Jessica Crawl — clean metadata with robust fallbacks
-
 
 const PLACEHOLDER_IMG = "https://miro.medium.com/v2/resize:fit:786/format:webp/1*l0k-78eTSOaUPijHdWIhkQ.png";
 
-
 exports.handler = async (event) => {
-try {
-if (event.httpMethod === "OPTIONS") return resText(204, "");
-if (event.httpMethod !== "POST") return resText(405, "Method Not Allowed");
+  try {
+    if (event.httpMethod === "OPTIONS") return resText(204, "");
+    if (event.httpMethod !== "POST") return resText(405, "Method Not Allowed");
 
+    const body = safeJSON(event.body);
+    if (!body) return resJSON(400, { error: "Invalid JSON body" });
 
-const body = safeJSON(event.body);
-if (!body) return resJSON(400, { error: "Invalid JSON body" });
+    let links = [];
+    if (Array.isArray(body.links) && body.links.length) links = body.links;
+    else if (typeof body.url === "string" && body.url.trim()) links = [body.url];
 
+    const session = body.session || "";
+    if (!links.length) return resJSON(400, { error: "No links provided" });
 
-let links = [];
-if (Array.isArray(body.links) && body.links.length) links = body.links;
-else if (typeof body.url === "string" && body.url.trim()) links = [body.url];
+    const results = [];
 
+    for (let rawUrl of links) {
+      let safeUrl = String(rawUrl || "").trim();
+      if (!/^https?:\/\//i.test(safeUrl)) safeUrl = "https://" + safeUrl;
 
-const session = body.session || "";
-if (!links.length) return resJSON(400, { error: "No links provided" });
+      try {
+        const o = await tryOEmbed(safeUrl);
+        if (o) { results.push(o); continue; }
 
+        const r = await fetch(safeUrl, {
+          redirect: "follow",
+          headers: {
+            "User-Agent": "Mozilla/5.0 (compatible; Jessica-SPZ/2.0; +https://example.org)",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9"
+          }
+        });
 
-const results = [];
+        if (!r.ok) throw new Error(`Fetch ${r.status}`);
+        const html = await r.text();
+        const host = normalizeHost(safeUrl);
 
+        const title = extractTitle(html) || host;
+        const description = extractDescription(html) || "No description available";
+        const author = extractAuthor(html);
+        const profile = extractProfile(html);
+        const image = absolutize(safeUrl, bestImage(html) || "");
+        const keywords = extractKeywords(html);
+        const video = bestVideo(html, safeUrl);
+        const siteName = extractSiteName(html) || host;
 
-for (let rawUrl of links) {
-let safeUrl = String(rawUrl || "").trim();
-if (!/^https?:\/\//i.test(safeUrl)) safeUrl = "https://" + safeUrl;
+        // ✅ YouTube-specific metadata
+        let ytExtra = {};
+        if (/youtube\.com|youtu\.be/i.test(safeUrl)) {
+          ytExtra = {
+            videoUrl: findMetaContent(html, ["og:video:url"]),
+            videoType: findMetaContent(html, ["og:video:type"]),
+            videoWidth: findMetaContent(html, ["og:video:width"]),
+            videoHeight: findMetaContent(html, ["og:video:height"]),
+            duration: findMetaContent(html, ["og:video:duration"]),
+            published: findMetaContent(html, ["article:published_time"]),
+            channel: findMetaContent(html, ["og:video:tag"])
+          };
+        }
 
+        const card = {
+          url: safeUrl,
+          title,
+          description,
+          image: image || siteFavicon(safeUrl),
+          siteName,
+          author,
+          profile,
+          keywords,
+          rawHTMLLength: html.length,
+          enrich: {
+            video,
+            canonical: findLinkHref(html, "canonical"),
+            icon: extractIcon(html, safeUrl),
+            ...ytExtra
+          }
+        };
 
-try {
-const o = await tryOEmbed(safeUrl);
-if (o) { results.push(o); continue; }
+        const isVoid = !card.title || !card.description || !card.image;
+        results.push(isVoid ? { ...card, frameType: "void" } : card);
+      } catch (err) {
+        results.push({ url: safeUrl, error: String(err?.message || err) });
+      }
+    }
 
-
-const r = await fetch(safeUrl, {
-redirect: "follow",
-headers: {
-"User-Agent": "Mozilla/5.0 (compatible; Jessica-SPZ/2.0; +https://example.org)",
-"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-"Accept-Language": "en-US,en;q=0.9"
-}
-});
-
-
-if (!r.ok) throw new Error(`Fetch ${r.status}`);
-const html = await r.text();
-const host = normalizeHost(safeUrl);
-
-
-const title = extractTitle(html) || host;
-const description = extractDescription(html) || "No description available";
-const author = extractAuthor(html);
-const profile = extractProfile(html);
-const image = absolutize(safeUrl, bestImage(html) || "");
-const keywords = extractKeywords(html);
-const video = bestVideo(html, safeUrl);
-const siteName = extractSiteName(html) || host;
-
-
-const card = {
-url: safeUrl,
-title,
-description,
-image: image || siteFavicon(safeUrl),
-siteName,
-author,
-profile,
-keywords,
-rawHTMLLength: html.length,
-enrich: {
-video,
-canonical: findLinkHref(html, "canonical"),
-icon: extractIcon(html, safeUrl)
-}
+    return resJSON(200, { session, results });
+  } catch (err) {
+    return resJSON(500, { error: String(err?.message || err) });
+  }
 };
-
-
-const isVoid = !card.title || !card.description || !card.image;
-results.push(isVoid ? { ...card, frameType: "void" } : card);
-} catch (err) {
-results.push({ url: safeUrl, error: String(err?.message || err) });
-}
-}
-
-
-return resJSON(200, { session, results });
-} catch (err) {
-return resJSON(500, { error: String(err?.message || err) });
-}
-};
-
 
 /* ---------------- helpers ---------------- */
 function resText(code, text) {
@@ -233,10 +231,10 @@ function absolutize(base, src) {
 /* ----- oEmbed (fast paths) ----- */
 async function tryOEmbed(url) {
   const endpoints = [
-    { match: /twitter\\.com|x\\.com/i, api: "https://publish.twitter.com/oembed?url=" },
-    { match: /reddit\\.com/i, api: "https://www.reddit.com/oembed?url=" },
-    { match: /youtube\\.com|youtu\\.be/i, api: "https://www.youtube.com/oembed?url=" },
-    { match: /tiktok\\.com/i, api: "https://www.tiktok.com/oembed?url=" }
+    { match: /twitter\.com|x\.com/i, api: "https://publish.twitter.com/oembed?url=" },
+    { match: /reddit\.com/i, api: "https://www.reddit.com/oembed?url=" },
+    { match: /youtube\.com|youtu\.be/i, api: "https://www.youtube.com/oembed?url=" },
+    { match: /tiktok\.com/i, api: "https://www.tiktok.com/oembed?url=" }
   ];
   for (const ep of endpoints) {
     if (ep.match.test(url)) {
