@@ -4,6 +4,7 @@ rewrite the index
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  
   <title>SporeZ — Card Deck</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
@@ -215,16 +216,17 @@ rewrite the index
       const d1 = (r.description || "").trim();
       const d2raw = (r.title || "").trim();
       const d2 = (d2raw && d2raw !== d1) ? d2raw : "";
-      return {
-        url: r.url,
-        title: r.title || site || r.url,
-        desc1: d1,
-        desc2: d2,
-        image: r.image || "",
-        brand: site,
-        siteName: site,
-        keywords: Array.isArray(r.keywords) ? r.keywords : []
-      };
+     return {
+  url: r.url,
+  title: r.title || site || r.url,
+  desc1: d1,
+  desc2: d2,
+  image: r.image || "",
+  video: r.enrich?.video || "",   // ✅ pass through video
+  brand: site,
+  siteName: site,
+  keywords: Array.isArray(r.keywords) ? r.keywords : []
+};
     });
 
     const enriched = await postJSON(ENRICH_API, { items, session: crawled.session });
