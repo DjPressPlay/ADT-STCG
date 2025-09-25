@@ -170,7 +170,10 @@ rewrite the index
     card.className = "card";
     card.innerHTML = `
       <div class="card-header">${c.title}</div>
-      <div class="card-image"></div>
+     const media = document.createElement("div");
+media.className = "card-image";
+media.appendChild(renderMedia(theCardObject));
+
       <div class="footer">Zetsumetsu Eoe™ | ZETSUMETSU CORPORATION | Artworqq Kevin Suber</div>
     `;
     deck.appendChild(card);
