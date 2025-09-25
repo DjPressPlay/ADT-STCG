@@ -224,3 +224,22 @@ function applyZoneBehavior(el) {
 
   return el;
 }
+
+
+document.addEventListener("click", (e) => {
+  const wrapper = e.target.closest(".video-thumb");
+  if (!wrapper) return;
+
+  const videoUrl = wrapper.getAttribute("data-video");
+  if (!videoUrl) return;
+
+  wrapper.outerHTML = `
+    <iframe 
+      src="${videoUrl}?autoplay=1" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen
+      style="width:100%;height:100%;border-radius:8px;">
+    </iframe>
+  `;
+});
