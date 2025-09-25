@@ -48,8 +48,8 @@ exports.handler = async (event) => {
         const author = extractAuthor(html);
         const profile = extractProfile(html);
         const keywords = extractKeywords(html);
-        const video = bestVideo(html, safeUrl); // ✅ video first
-        const image = !video ? absolutize(safeUrl, bestImage(html) || "") : ""; // fallback only if no video
+        const video = bestVideo(html, safeUrl);
+        const image = absolutize(safeUrl, bestImage(html) || "") || siteFavicon(safeUrl);
         const siteName = extractSiteName(html) || host;
 
         // ✅ YouTube-specific metadata
