@@ -84,6 +84,25 @@ exports.handler = async (event) => {
           }
         };
 
+// 🔥 Insert this block here
+if (/youtube\.com|youtu\.be/i.test(safeUrl)) {
+  try {
+    let videoId = "";
+    const u = new URL(safeUrl);
+    if (u.hostname.includes("youtube.com")) {
+      videoId = u.searchParams.get("v");
+    } else if (u.hostname.includes("youtu.be")) {
+      videoId = u.pathname.slice(1);
+    }
+    if (videoId) {
+      card.enrich.video = `https://www.youtube.com/embed/${videoId}`;
+    }
+  } catch (e) {
+    console.error("YouTube embed parse error:", e);
+  }
+}
+
+        
         const isVoid = !card.title || !card.description || (!card.image && !card.enrich.video);
         results.push(isVoid ? { ...card, frameType: "void" } : card);
       } catch (err) {
