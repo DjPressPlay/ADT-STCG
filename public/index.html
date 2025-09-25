@@ -1,5 +1,3 @@
-rewrite the index 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -156,7 +154,6 @@ rewrite the index
   <div class="output" id="output">⚡ Card data stream will appear here...</div>
 
 <script>
-  
   /* ===== Deck build (visual only) ===== */
   const cardsData = [
     { title: "⚡ Zetsu Blade" },
@@ -301,20 +298,9 @@ function renderMedia(card) {
     } catch {
       raw = localStorage.getItem("jessica_card") || "{}";
     }
-
-    // Parse card JSON and render media
-    const card = JSON.parse(raw);
-    const media = renderMedia(card);
-
-    // Optional: show preview in current page before popup
-    output.innerHTML = "";
-    output.appendChild(media);
-
-    // Pass card JSON to popup
     const url = "summon_btn.html?card=" + encodeURIComponent(raw);
     window.open(url, "SummonCard", "width=520,height=820");
   });
-
 
   /* ===== Battle button → open ADT game in popup ===== */
   document.getElementById("battle-btn").addEventListener("click", () => {
