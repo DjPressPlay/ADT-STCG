@@ -254,6 +254,27 @@ rewrite the index
     return (enriched.cards && enriched.cards[0]) || null;
   }
 
+
+function renderMedia(card) {
+  if (card.video) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "video-thumb";
+    wrapper.dataset.video = card.video;
+    wrapper.innerHTML = `
+      <img src="${card.image || ''}" alt="Video thumbnail">
+      <div class="play-button">▶</div>
+    `;
+    return wrapper;
+  } else if (card.image) {
+    const img = document.createElement("img");
+    img.src = card.image;
+    img.alt = card.title || "";
+    return img;
+  }
+  return document.createTextNode("No media");
+}
+
+  
   /* ===== Ritual → scrape → enrich → show ===== */
   button?.addEventListener("click", async () => {
     const url = (input?.value || "").trim();
