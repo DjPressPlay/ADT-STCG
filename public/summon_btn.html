@@ -189,8 +189,31 @@ $("card-id").textContent   = card.id || "";
 $("card-name").textContent = card.name || "";
 $("card-icon").textContent = card.icon || "";
 
-$("card-image").src = card.card_images?.[0]?.image_url || "";
-$("card-image").alt = card.name || "";
+// --- Media (image or video) ---
+const artBox = document.querySelector(".card-art");
+
+if (card.video) {
+  // Replace image with iframe if video is present
+  artBox.innerHTML = `
+    <iframe
+      src="${card.video}?autoplay=0"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+      style="width:100%;height:100%;border-radius:8px;">
+    </iframe>
+    <div class="stat-orb stat-blue"  id="level">${card.level || ""}</div>
+    <div class="stat-orb stat-red"   id="atk">${card.atk || ""}</div>
+    <div class="stat-orb stat-green" id="def">${card.def || ""}</div>
+  `;
+} else {
+  // Default to image (your existing behavior)
+  $("card-image").src = card.card_images?.[0]?.image_url || "";
+  $("card-image").alt = card.name || "";
+  $("level").textContent = card.level || "";
+  $("atk").textContent   = card.atk   || "";
+  $("def").textContent   = card.def   || "";
+}
 
 $("level").textContent = card.level || "";
 $("atk").textContent   = card.atk   || "";
