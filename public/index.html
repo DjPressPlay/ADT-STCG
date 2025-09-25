@@ -170,10 +170,7 @@ rewrite the index
     card.className = "card";
     card.innerHTML = `
       <div class="card-header">${c.title}</div>
-     const media = document.createElement("div");
-media.className = "card-image";
-media.appendChild(renderMedia(theCardObject));
-
+      <div class="card-image"></div>
       <div class="footer">Zetsumetsu Eoe™ | ZETSUMETSU CORPORATION | Artworqq Kevin Suber</div>
     `;
     deck.appendChild(card);
@@ -303,9 +300,20 @@ function renderMedia(card) {
     } catch {
       raw = localStorage.getItem("jessica_card") || "{}";
     }
+
+    // Parse card JSON and render media
+    const card = JSON.parse(raw);
+    const media = renderMedia(card);
+
+    // Optional: show preview in current page before popup
+    output.innerHTML = "";
+    output.appendChild(media);
+
+    // Pass card JSON to popup
     const url = "summon_btn.html?card=" + encodeURIComponent(raw);
     window.open(url, "SummonCard", "width=520,height=820");
   });
+
 
   /* ===== Battle button → open ADT game in popup ===== */
   document.getElementById("battle-btn").addEventListener("click", () => {
