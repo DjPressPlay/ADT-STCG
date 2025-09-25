@@ -239,15 +239,16 @@ function toCard(it = {}) {
   const image = (it.image || it.img || "").trim();
   const brand = (it.brand || it.siteName || hostFromUrl(url)).trim();
 
-  // 🔑 tags: merge crawl + generated
+  // ✅ define video safely
+  const video = (it.video || (it.enrich && it.enrich.video) || "").trim();
+
+  // tags, category, stats, etc…
   const tags = [
     ...(Array.isArray(it.keywords) ? it.keywords : []),
     ...generateTagsFromContent(title, desc1)
   ].map(t => String(t).trim());
 
   const rank = String((desc1 + desc2).length).padStart(6,"0");
-
-  // 🔑 Category → mapped fields (now passes full context)
   const category = normalizeCategory(
     it.category || brand,
     it.keywords || [],
@@ -256,17 +257,13 @@ function toCard(it = {}) {
     desc2,
     brand
   );
-const { icon, rarity, frameType, max_tribute, color } = categoryMap(category);
-
-  // 🔑 Use max_tribute as tributes + level
+  const { icon, rarity, frameType, max_tribute, color } = categoryMap(category);
   const tributes = max_tribute;
   const tribute = "🙇‍♂️".repeat(tributes);
   const { atk, def, level } = calcStats(tributes);
-
   const yyyy = (new Date()).getUTCFullYear();
   const card_sets = [brand, `${yyyy} ${brand}`];
 
-  // 🔑 Effects always tied to emojiMap
   const effects = [];
   if (desc1) effects.push({ icons: icon, emoji: emojiMap[category] || "🧩", text: desc1 });
   if (desc2) effects.push({ icons: icon, emoji: emojiMap[category] || "🧩", text: desc2 });
@@ -281,7 +278,7 @@ const { icon, rarity, frameType, max_tribute, color } = categoryMap(category);
     atk,
     def,
     level,
-    tributes,               // <- 🔑 keep numeric value
+    tributes,
     rarity,
     tags,
     card_sets,
@@ -290,7 +287,7 @@ const { icon, rarity, frameType, max_tribute, color } = categoryMap(category);
     card_images: [{ image_url: image }],
     frameType,
     category,
-    color,   // 🔥 now included
+    color,
     video,    
     _source_url: url
     
