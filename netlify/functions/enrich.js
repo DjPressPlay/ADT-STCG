@@ -229,6 +229,28 @@ function calcStats(tributes) {
 
 /* ---------------- core transform ---------------- */
 
+function normalizeVideoUrl(url) {
+  if (!url) return "";
+  try {
+    const u = new URL(url);
+
+    // YouTube full link → embed
+    if (u.hostname.includes("youtube.com") && u.searchParams.get("v")) {
+      return `https://www.youtube.com/embed/${u.searchParams.get("v")}`;
+    }
+
+    // YouTube short link → embed
+    if (u.hostname.includes("youtu.be")) {
+      return `https://www.youtube.com/embed${u.pathname}`;
+    }
+
+    // fallback (e.g., Vimeo just pass through)
+    return url;
+  } catch {
+    return "";
+  }
+}
+
 function toCard(it = {}) {
   const url = it.url || it.link || "";
   if (!url) return null;
@@ -239,8 +261,9 @@ function toCard(it = {}) {
   const image = (it.image || it.img || "").trim();
   const brand = (it.brand || it.siteName || hostFromUrl(url)).trim();
 
-  // ✅ define video safely
-  const video = (it.video || (it.enrich && it.enrich.video) || "").trim();
+  // ✅ define video safely with fallback
+  const rawVideo = (it.video || (it.enrich && it.enrich.video) || "").trim();
+  const video = rawVideo || normalizeVideoUrl(url);
 
   // tags, category, stats, etc…
   const tags = [
@@ -288,8 +311,7 @@ function toCard(it = {}) {
     frameType,
     category,
     color,
-    video,    
+    video,     // 👈 always embed-ready now
     _source_url: url
-    
   };
 }
